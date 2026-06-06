@@ -151,73 +151,77 @@ export function ContactPageClient({
             <p className="mt-2 text-foreground-muted">{c.channelsSubtitle}</p>
 
             <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-1">
-              {contactChannels.map(({ key, icon: Icon, value, label, ...rest }, i) => {
-                const href = "href" in rest ? rest.href : undefined;
-                const isEmail = key === "email";
-                const isPhone = key === "phone";
-                const isExternalAction = isEmail || isPhone;
+              {contactChannels.map(
+                ({ key, icon: Icon, value, label, ...rest }, i) => {
+                  const href = "href" in rest ? rest.href : undefined;
+                  const isEmail = key === "email";
+                  const isPhone = key === "phone";
+                  const isExternalAction = isEmail || isPhone;
 
-                const card = (
-                  <Card
-                    padding="md"
-                    className={cn(
-                      "card-elevated group h-full border-border/80 transition-colors",
-                      isExternalAction &&
-                        "hover:border-accent/35 hover:shadow-md cursor-pointer",
-                      !isExternalAction && "hover:border-accent/35",
-                    )}
-                  >
-                    <div className="flex gap-4">
-                      <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-accent/15 text-accent transition-transform duration-300 group-hover:scale-105">
-                        <Icon className="h-5 w-5" aria-hidden />
+                  const card = (
+                    <Card
+                      padding="md"
+                      className={cn(
+                        "card-elevated group h-full border-border/80 transition-colors",
+                        isExternalAction &&
+                          "hover:border-accent/35 hover:shadow-md cursor-pointer",
+                        !isExternalAction && "hover:border-accent/35",
+                      )}
+                    >
+                      <div className="flex gap-4">
+                        <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-accent/15 text-accent transition-transform duration-300 group-hover:scale-105">
+                          <Icon className="h-5 w-5" aria-hidden />
+                        </div>
+                        <div className="min-w-0">
+                          <p className="text-xs font-medium uppercase tracking-wide text-foreground-muted">
+                            {label}
+                          </p>
+                          <p
+                            className={cn(
+                              "mt-1 font-medium text-foreground break-words",
+                              isExternalAction && "group-hover:text-accent",
+                              (isEmail || isPhone) && "ltr-isolate",
+                            )}
+                          >
+                            {value}
+                          </p>
+                        </div>
                       </div>
-                      <div className="min-w-0">
-                        <p className="text-xs font-medium uppercase tracking-wide text-foreground-muted">
-                          {label}
-                        </p>
-                        <p
-                          className={cn(
-                            "mt-1 font-medium text-foreground break-words",
-                            isExternalAction && "group-hover:text-accent",
-                            (isEmail || isPhone) && "ltr-isolate",
-                          )}
+                    </Card>
+                  );
+
+                  return (
+                    <motion.div
+                      key={key}
+                      initial={{ opacity: 0, x: locale === "ar" ? 16 : -16 }}
+                      whileInView={{ opacity: 1, x: 0 }}
+                      viewport={{ once: true }}
+                      transition={{ delay: i * 0.08, duration: 0.35 }}
+                    >
+                      {href && isExternalAction ? (
+                        <a
+                          href={href}
+                          target={
+                            isEmail || isExternalHref(href)
+                              ? "_blank"
+                              : undefined
+                          }
+                          rel={
+                            isEmail || isExternalHref(href)
+                              ? "noopener noreferrer"
+                              : undefined
+                          }
+                          className="block cursor-pointer no-underline"
                         >
-                          {value}
-                        </p>
-                      </div>
-                    </div>
-                  </Card>
-                );
-
-                return (
-                  <motion.div
-                    key={key}
-                    initial={{ opacity: 0, x: locale === "ar" ? 16 : -16 }}
-                    whileInView={{ opacity: 1, x: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ delay: i * 0.08, duration: 0.35 }}
-                  >
-                    {href && isExternalAction ? (
-                      <a
-                        href={href}
-                        target={
-                          isEmail || isExternalHref(href) ? "_blank" : undefined
-                        }
-                        rel={
-                          isEmail || isExternalHref(href)
-                            ? "noopener noreferrer"
-                            : undefined
-                        }
-                        className="block cursor-pointer no-underline"
-                      >
-                        {card}
-                      </a>
-                    ) : (
-                      card
-                    )}
-                  </motion.div>
-                );
-              })}
+                          {card}
+                        </a>
+                      ) : (
+                        card
+                      )}
+                    </motion.div>
+                  );
+                },
+              )}
             </div>
 
             <Card

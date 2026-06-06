@@ -163,7 +163,9 @@ export default function AdminContactsPage() {
                 <p className="text-xs font-medium uppercase tracking-wide text-foreground-muted">
                   {locale === "ar" ? "الموضوع" : "Subject"}
                 </p>
-                <p className="mt-1 font-medium text-foreground">{row.subject}</p>
+                <p className="mt-1 font-medium text-foreground">
+                  {row.subject}
+                </p>
               </div>
 
               <div className="mt-4 rounded-xl border border-border/80 bg-background/50 p-4">

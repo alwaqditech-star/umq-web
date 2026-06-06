@@ -63,7 +63,11 @@ export function AdminFormModal({
       for (const field of fields) {
         const raw = initialValues[field.name];
         next[field.name] =
-          typeof raw === "boolean" ? (raw ? "true" : "false") : String(raw ?? "");
+          typeof raw === "boolean"
+            ? raw
+              ? "true"
+              : "false"
+            : String(raw ?? "");
       }
       setValues(next);
       setImagePreviews(imagePreviewsProp);

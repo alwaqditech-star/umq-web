@@ -5,6 +5,7 @@
     "NODE_ENV",
     "NEXT_PUBLIC_API_URL",
     "API_INTERNAL_URL",
+    "API_PORT",
     "WEB_ORIGIN"
   ],
   "tasks": {

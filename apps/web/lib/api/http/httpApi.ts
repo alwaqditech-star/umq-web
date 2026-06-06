@@ -75,11 +75,12 @@ export const httpApi: ApiClient = {
         auth: true,
         body: JSON.stringify(data),
       }),
-    delete: (id: string) =>
-      apiFetch<{ message: string }>(`/admin/contacts/${id}`, {
+    delete: async (id: string) => {
+      await apiFetch<{ message: string }>(`/admin/contacts/${id}`, {
         method: "DELETE",
         auth: true,
-      }),
+      });
+    },
   },
   categories: {
     projects: projectCategoriesApi,
