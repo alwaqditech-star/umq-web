@@ -1,0 +1,272 @@
+import type { Locale } from "@/stores/ui-store";
+
+const ar = {
+  brand: "عُمْق",
+  brandFull: "عُمْق لتقنية المعلومات",
+  tagline: "حلول تقنية مؤسسية بعمق استراتيجي",
+  nav: {
+    home: "الرئيسية",
+    about: "من نحن",
+    services: "الخدمات",
+    projects: "المشاريع",
+    blog: "المدونة",
+    careers: "الوظائف",
+    contact: "تواصل معنا",
+    admin: "لوحة التحكم",
+    dashboard: "لوحة التحكم",
+    login: "تسجيل الدخول",
+  },
+  cta: {
+    getStarted: "ابدأ مشروعك",
+    learnMore: "اعرف المزيد",
+    contactUs: "تواصل معنا",
+    viewAll: "عرض الكل",
+    apply: "قدّم الآن",
+    readMore: "اقرأ المزيد",
+  },
+  sections: {
+    services: "خدماتنا",
+    projects: "مشاريعنا",
+    testimonials: "آراء العملاء",
+    latestPosts: "أحدث المقالات",
+    openRoles: "الوظائف المتاحة",
+  },
+  footer: {
+    rights: "جميع الحقوق محفوظة",
+    privacy: "الخصوصية",
+    terms: "الشروط",
+    company: "الشركة",
+    explore: "استكشف",
+    connect: "تواصل",
+    description:
+      "شريكك التقني لبناء المنصات الرقمية والحلول المؤسسية بمعايير عالمية.",
+    newsletter: "ابق على اطلاع",
+    newsletterHint: "أحدث الأخبار والمقالات — قريباً.",
+  },
+  contact: {
+    kicker: "نحن هنا لمساعدتك",
+    title: "تواصل معنا",
+    subtitle:
+      "شاركنا تفاصيل مشروعك أو استفسارك — فريقنا يرد خلال يوم عمل واحد.",
+    channelsTitle: "قنوات التواصل",
+    channelsSubtitle: "اختر الطريقة الأنسب أو أرسل النموذج مباشرة.",
+    formTitle: "أرسل رسالة",
+    formSubtitle: "جميع الحقول المميزة بـ * مطلوبة.",
+    name: "الاسم الكامل",
+    emailLabel: "البريد الإلكتروني",
+    phoneLabel: "رقم الجوال",
+    phonePlaceholder: "+966501234567",
+    phoneHint: "أدخل الرقم بصيغة دولية كاملة مع رمز الدولة، مثل +966501234567",
+    phoneInvalid:
+      "أدخل رقم جوال صحيح مع رمز الدولة (مثال: +966501234567)",
+    subject: "الموضوع",
+    message: "الرسالة",
+    messageHint: "10 أحرف على الأقل",
+    messageTooShort: "الرسالة قصيرة جداً — اكتب 10 أحرف على الأقل",
+    submit: "إرسال الرسالة",
+    successTitle: "تم الإرسال بنجاح",
+    successMessage:
+      "شكراً لتواصلك. سيقوم أحد أعضاء فريق عُمْق بالرد على بريدك في أقرب وقت.",
+    sendAnother: "إرسال رسالة أخرى",
+    errorSend: "تعذر إرسال الرسالة. حاول مرة أخرى.",
+    errorApiOffline:
+      "تعذر الاتصال بالخادم. شغّل مشروع API أولاً: cd ../umq-api && pnpm dev",
+    responseTitle: "وقت الاستجابة",
+    responseBody:
+      "نرد عادةً خلال 24 ساعة في أيام العمل. للمشاركات العاجلة، اتصل بنا مباشرة.",
+    mapCaption: "الرياض، المملكة العربية السعودية",
+    email: { label: "البريد", value: "umqTech2026@gmail.com" },
+    phone: { label: "الهاتف", value: "+966 55 991 8514" },
+    address: { label: "العنوان", value: "الرياض — المملكة العربية السعودية" },
+    hours: { label: "ساعات العمل", value: "الأحد – الخميس، 9 ص – 6 م" },
+  },
+  pages: {
+    aboutKicker: "من نحن",
+    aboutTitle: "عُمْق في سطور",
+    aboutDesc:
+      "شركة سعودية تجمع بين العمق الاستراتيجي والتنفيذ التقني لبناء منتجات رقمية آمنة وقابلة للتوسع.",
+    servicesKicker: "ما نقدّمه",
+    servicesTitle: "خدماتنا",
+    servicesDesc: "مجموعة خدمات تقنية شاملة لدعم نمو أعمالك وتحولك الرقمي.",
+    projectsKicker: "أعمالنا",
+    projectsTitle: "مشاريعنا",
+    projectsDesc: "نماذج من مشاريع نفخر بتنفيذها مع شركائنا.",
+    blogKicker: "المعرفة",
+    blogTitle: "المدونة",
+    blogDesc: "رؤى وتجارب من فريق عُمْق في التقنية والمنتجات الرقمية.",
+  },
+  admin: {
+    dashboard: "نظرة عامة",
+    users: "المستخدمون",
+    roles: "الأدوار",
+    services: "الخدمات",
+    projects: "المشاريع",
+    blog: "المدونة",
+    jobs: "الوظائف",
+    applications: "الطلبات",
+    contacts: "رسائل التواصل",
+    settings: "الإعدادات",
+    logout: "خروج",
+    welcome: "مرحباً بك",
+    overview: "ملخص المنصة",
+  },
+  auth: {
+    loginTitle: "تسجيل الدخول",
+    loginSubtitle: "ادخل إلى لوحة تحكم عُمْق",
+    email: "البريد الإلكتروني",
+    password: "كلمة المرور",
+    remember: "تذكرني",
+    submit: "دخول",
+    forgotTitle: "نسيت كلمة المرور",
+    forgotSubtitle: "أدخل بريدك وسنرسل رابط إعادة التعيين عند تفعيل الخدمة",
+    sendResetLink: "إرسال الرابط",
+    backToLogin: "العودة لتسجيل الدخول",
+    requestFailed: "تعذر إرسال الطلب. حاول لاحقاً",
+  },
+};
+
+const en: typeof ar = {
+  brand: "UMQ",
+  brandFull: "UMQ Information Technology",
+  tagline: "Enterprise technology with strategic depth",
+  nav: {
+    home: "Home",
+    about: "About",
+    services: "Services",
+    projects: "Projects",
+    blog: "Blog",
+    careers: "Careers",
+    contact: "Contact",
+    admin: "Dashboard",
+    dashboard: "Dashboard",
+    login: "Sign in",
+  },
+  cta: {
+    getStarted: "Start your project",
+    learnMore: "Learn more",
+    contactUs: "Contact us",
+    viewAll: "View all",
+    apply: "Apply now",
+    readMore: "Read more",
+  },
+  sections: {
+    services: "Our Services",
+    projects: "Our Projects",
+    testimonials: "Client Stories",
+    latestPosts: "Latest Articles",
+    openRoles: "Open Positions",
+  },
+  footer: {
+    rights: "All rights reserved",
+    privacy: "Privacy",
+    terms: "Terms",
+    company: "Company",
+    explore: "Explore",
+    connect: "Connect",
+    description:
+      "Your technology partner for digital platforms and enterprise solutions built to global standards.",
+    newsletter: "Stay updated",
+    newsletterHint: "News and articles — coming soon.",
+  },
+  contact: {
+    kicker: "We're here to help",
+    title: "Contact Us",
+    subtitle:
+      "Share your project or question — our team typically responds within one business day.",
+    channelsTitle: "Get in touch",
+    channelsSubtitle: "Pick a channel below or send the form directly.",
+    formTitle: "Send a message",
+    formSubtitle: "Required fields are marked with *.",
+    name: "Full name",
+    emailLabel: "Email",
+    phoneLabel: "Phone",
+    phonePlaceholder: "+966501234567",
+    phoneHint:
+      "Enter the full international number with country code, e.g. +966501234567",
+    phoneInvalid:
+      "Enter a valid phone number with country code (e.g. +966501234567)",
+    subject: "Subject",
+    message: "Message",
+    messageHint: "At least 10 characters",
+    messageTooShort: "Message is too short — write at least 10 characters",
+    submit: "Send message",
+    successTitle: "Message sent",
+    successMessage:
+      "Thank you for reaching out. A UMQ team member will reply to your email shortly.",
+    sendAnother: "Send another message",
+    errorSend: "Could not send message. Please try again.",
+    errorApiOffline:
+      "Cannot reach the API server. Start it first: cd ../umq-api && pnpm dev",
+    responseTitle: "Response time",
+    responseBody:
+      "We usually reply within 24 hours on business days. For urgent matters, call us directly.",
+    mapCaption: "Riyadh, Kingdom of Saudi Arabia",
+    email: { label: "Email", value: "umqTech2026@gmail.com" },
+    phone: { label: "Phone", value: "+966 55 991 8514" },
+    address: { label: "Address", value: "Riyadh — Saudi Arabia" },
+    hours: { label: "Hours", value: "Sun – Thu, 9 AM – 6 PM" },
+  },
+  pages: {
+    aboutKicker: "About",
+    aboutTitle: "Who we are",
+    aboutDesc:
+      "A Saudi company combining strategic depth with engineering excellence for secure, scalable digital products.",
+    servicesKicker: "What we do",
+    servicesTitle: "Services",
+    servicesDesc:
+      "A comprehensive suite of technology services to support your growth and digital transformation.",
+    projectsKicker: "Portfolio",
+    projectsTitle: "Projects",
+    projectsDesc: "Selected work we're proud to deliver with our partners.",
+    blogKicker: "Insights",
+    blogTitle: "Blog",
+    blogDesc:
+      "Perspectives from the UMQ team on technology and digital products.",
+  },
+  admin: {
+    dashboard: "Overview",
+    users: "Users",
+    roles: "Roles",
+    services: "Services",
+    projects: "Projects",
+    blog: "Blog",
+    jobs: "Jobs",
+    applications: "Applications",
+    contacts: "Contact inbox",
+    settings: "Settings",
+    logout: "Log out",
+    welcome: "Welcome back",
+    overview: "Platform summary",
+  },
+  auth: {
+    loginTitle: "Sign in",
+    loginSubtitle: "Access the UMQ admin console",
+    email: "Email",
+    password: "Password",
+    remember: "Remember me",
+    submit: "Sign in",
+    forgotTitle: "Forgot password",
+    forgotSubtitle:
+      "Enter your email — reset links will work when the API is enabled",
+    sendResetLink: "Send reset link",
+    backToLogin: "Back to sign in",
+    requestFailed: "Request failed. Try again later",
+  },
+};
+
+export type Dictionary = typeof ar;
+
+export function getDictionary(locale: Locale): Dictionary {
+  return locale === "ar" ? ar : en;
+}
+
+export function localized(
+  locale: Locale,
+  item: object,
+  keyAr: string,
+  keyEn: string,
+): string {
+  const record = item as Record<string, string | number | undefined>;
+  const value = locale === "ar" ? record[keyAr] : record[keyEn];
+  return value != null ? String(value) : "";
+}

@@ -1,0 +1,23 @@
+{
+  "name": "umq-web",
+  "private": true,
+  "scripts": {
+    "build": "turbo run build",
+    "dev": "pnpm --filter @umq/shared build && pnpm --filter @umq/web dev",
+    "dev:web": "pnpm --filter @umq/shared build && pnpm --filter @umq/web dev",
+    "dev:free-ports": "node scripts/free-dev-ports.mjs web",
+    "lint": "turbo run lint",
+    "format": "prettier --write \"**/*.{ts,tsx,md,json}\"",
+    "format:check": "prettier --check \"**/*.{ts,tsx,md,json}\"",
+    "check-types": "turbo run check-types"
+  },
+  "devDependencies": {
+    "prettier": "^3.7.4",
+    "turbo": "^2.9.16",
+    "typescript": "5.9.2"
+  },
+  "packageManager": "pnpm@9.0.0",
+  "engines": {
+    "node": ">=18"
+  }
+}
