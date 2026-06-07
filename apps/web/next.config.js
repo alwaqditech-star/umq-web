@@ -1,6 +1,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import { getApiOrigin } from "./lib/api-origin.mjs";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -28,9 +29,7 @@ function loadRootEnv() {
 
 loadRootEnv();
 
-const apiInternal =
-  process.env.API_INTERNAL_URL?.replace(/\/$/, "") ??
-  `http://127.0.0.1:${process.env.API_PORT ?? "4001"}`;
+const apiInternal = getApiOrigin();
 
 const apiImagePort = (() => {
   try {
@@ -51,6 +50,11 @@ const nextConfig = {
     remotePatterns: [
       { protocol: "http", hostname: "127.0.0.1", port: apiImagePort, pathname: "/**" },
       { protocol: "http", hostname: "localhost", port: apiImagePort, pathname: "/**" },
+      {
+        protocol: "https",
+        hostname: "umq-api-api.vercel.app",
+        pathname: "/**",
+      },
       { protocol: "https", hostname: "**", pathname: "/**" },
     ],
   },

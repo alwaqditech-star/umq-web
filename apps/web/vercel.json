@@ -2,5 +2,15 @@
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "installCommand": "cd ../.. && pnpm install --frozen-lockfile",
   "buildCommand": "cd ../.. && pnpm turbo run build --filter=@umq/web",
-  "framework": "nextjs"
+  "framework": "nextjs",
+  "build": {
+    "env": {
+      "API_INTERNAL_URL": "https://umq-api-api.vercel.app",
+      "NEXT_PUBLIC_API_URL": "/api/v1"
+    }
+  },
+  "env": {
+    "API_INTERNAL_URL": "https://umq-api-api.vercel.app",
+    "NEXT_PUBLIC_API_URL": "/api/v1"
+  }
 }

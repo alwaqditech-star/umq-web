@@ -1,5 +1,6 @@
 import { useAuthStore } from "@/stores/auth-store";
 import { PUBLIC_PAGE_REVALIDATE } from "@/lib/public-cache";
+import { getApiOrigin } from "@/lib/api-origin.mjs";
 
 export class ApiError extends Error {
   constructor(
@@ -23,11 +24,7 @@ function normalizePublicApiPath(): string {
 /** Browser: same-origin absolute URL. Server: direct NestJS URL. */
 export function getBaseUrl(): string {
   if (typeof window === "undefined") {
-    const internal = (
-      process.env.API_INTERNAL_URL ??
-      `http://127.0.0.1:${process.env.API_PORT ?? "4001"}`
-    ).replace(/\/$/, "");
-    return `${internal}/api/v1`;
+    return `${getApiOrigin()}/api/v1`;
   }
   const path = normalizePublicApiPath();
   if (path.startsWith("http")) return path;

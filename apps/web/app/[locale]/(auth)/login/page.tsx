@@ -50,8 +50,8 @@ export default function LoginPage() {
       if (err instanceof ApiError && err.status === 404) {
         setError(
           locale === "ar"
-            ? "مسار API غير صحيح. شغّل `npm run dev` من جذر المشروع"
-            : "API route not found. Run `npm run dev` from the repo root",
+            ? "تعذر الاتصال بالخادم. تحقق من إعدادات API على Vercel"
+            : "Could not reach the API. Check API settings on Vercel",
         );
         return;
       }
