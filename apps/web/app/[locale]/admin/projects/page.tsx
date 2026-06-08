@@ -86,6 +86,14 @@ const projectFields = (locale: "ar" | "en") => [
     type: "image" as const,
     uploadFolder: "projects",
   },
+  {
+    name: "coverExternalUrl",
+    label:
+      locale === "ar"
+        ? "أو رابط صورة خارجي (Unsplash / CDN)"
+        : "Or external image URL (Unsplash / CDN)",
+    placeholder: "https://images.unsplash.com/...",
+  },
 ];
 
 export default function AdminProjectsPage() {
@@ -194,6 +202,7 @@ export default function AdminProjectsPage() {
                 status: editing.status ?? "draft",
                 featured: editing.featured ? "true" : "false",
                 coverMediaId: editing.coverMediaId ?? "",
+                coverExternalUrl: "",
               }
             : {
                 status: "published",
@@ -201,6 +210,7 @@ export default function AdminProjectsPage() {
                 order: "0",
                 categorySlug: "enterprise",
                 coverMediaId: "",
+                coverExternalUrl: "",
               }
         }
         imagePreviews={
@@ -230,6 +240,7 @@ export default function AdminProjectsPage() {
             status: values.status || "draft",
             featured: values.featured === "true",
             coverMediaId: values.coverMediaId?.trim() || null,
+            coverExternalUrl: values.coverExternalUrl?.trim() || undefined,
           };
           if (editing) await api.projects.update(editing.id, payload);
           else await api.projects.create(payload);
