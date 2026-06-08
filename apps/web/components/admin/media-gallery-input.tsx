@@ -97,7 +97,9 @@ export function MediaGalleryInput({
                   fill
                   className="object-cover"
                   sizes="160px"
-                  unoptimized={src.startsWith("http")}
+                  unoptimized={
+                    src.startsWith("http") || src.startsWith("/api/v1/media/")
+                  }
                 />
                 <div className="absolute inset-x-0 top-0 flex items-center justify-between bg-background/80 p-1 opacity-0 transition-opacity group-hover:opacity-100">
                   <div className="flex gap-0.5">

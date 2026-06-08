@@ -26,6 +26,7 @@ import {
 } from "@/components/ui/table";
 import { localized } from "@/lib/i18n/dictionaries";
 import { useLocale } from "@/lib/i18n/use-locale";
+import { mediaFilePath } from "@/lib/media-url";
 import { useAuthStore } from "@/stores/auth-store";
 
 const projectFields = (locale: "ar" | "en") => [
@@ -108,16 +109,17 @@ function toPayload(values: Record<string, string>) {
     status: values.status || "draft",
     featured: values.featured === "true",
     imageMediaIds: gallery.map((item) => item.id),
+    imageUrls: gallery.map((item) => item.url),
   };
 }
 
 function buildProjectGallery(project: Project): string {
-  if (project.imageMediaIds?.length && project.imageUrls?.length) {
+  if (project.imageMediaIds?.length) {
     const items = project.imageMediaIds.map((id, index) => ({
       id,
-      url: project.imageUrls?.[index] ?? "",
+      url: project.imageUrls?.[index] ?? mediaFilePath(id),
     }));
-    return serializeGalleryValue(items.filter((item) => item.id && item.url));
+    return serializeGalleryValue(items.filter((item) => item.id));
   }
   if (project.coverImageUrl) {
     return serializeGalleryValue([

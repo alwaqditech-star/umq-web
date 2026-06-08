@@ -4,6 +4,7 @@ import { FadeUp } from "@/components/motion/fade-up";
 import { ProjectImageCarousel } from "@/components/public/project-image-carousel";
 import { Badge } from "@/components/ui/badge";
 import { localized } from "@/lib/i18n/dictionaries";
+import { getProjectImages } from "@/lib/media-url";
 import { isValidLocale, localePath } from "@/lib/i18n/routes";
 import { notFound } from "next/navigation";
 import type { Locale } from "@/stores/ui-store";
@@ -38,16 +39,12 @@ export default async function ProjectDetailPage({
         {project.category && <Badge className="mt-6">{project.category}</Badge>}
         <div className="relative mt-8 max-w-4xl overflow-hidden rounded-2xl">
           <ProjectImageCarousel
-            images={
-              project.imageUrls?.length
-                ? project.imageUrls
-                : project.coverImageUrl
-                  ? [project.coverImageUrl]
-                  : []
-            }
+            images={getProjectImages(project)}
             alt={localized(locale, project, "titleAr", "titleEn")}
             aspectClassName="aspect-[16/9]"
             sizes="(max-width:1024px) 100vw, 896px"
+            showThumbnails
+            locale={locale}
           />
         </div>
         <h1 className="mt-8 text-4xl font-bold">

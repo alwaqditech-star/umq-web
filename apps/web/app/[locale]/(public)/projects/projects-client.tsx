@@ -9,6 +9,7 @@ import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import type { Project } from "@/lib/api/types";
+import { getProjectImages } from "@/lib/media-url";
 import { getDictionary, localized } from "@/lib/i18n/dictionaries";
 import { localePath } from "@/lib/i18n/routes";
 import type { Locale } from "@/stores/ui-store";
@@ -61,15 +62,11 @@ export function ProjectsPageClient({
                 <Link href={localePath(locale, `/projects/${project.slug}`)}>
                   <div className="relative overflow-hidden">
                     <ProjectImageCarousel
-                      images={
-                        project.imageUrls?.length
-                          ? project.imageUrls
-                          : project.coverImageUrl
-                            ? [project.coverImageUrl]
-                            : []
-                      }
+                      images={getProjectImages(project)}
                       alt={localized(locale, project, "titleAr", "titleEn")}
                       className="transition-transform duration-500 group-hover:scale-105"
+                      locale={locale}
+                      autoPlay={false}
                     />
                     <div className="pointer-events-none absolute inset-0 bg-primary/0 transition-colors group-hover:bg-primary/10" />
                   </div>
