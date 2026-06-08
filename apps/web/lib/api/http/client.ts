@@ -125,17 +125,32 @@ export async function apiUpload<T>(
   formData: FormData,
 ): Promise<T> {
   const url = `${getBaseUrl()}${path.startsWith("/") ? path : `/${path}`}`;
-  const response = await fetch(url, {
+
+  let response = await fetch(url, {
     method: "POST",
     credentials: "include",
     body: formData,
   });
+
+  if (response.status === 401) {
+    const refreshed = await refreshSession();
+    if (refreshed) {
+      response = await fetch(url, {
+        method: "POST",
+        credentials: "include",
+        body: formData,
+      });
+    }
+  }
+
   if (!response.ok) {
     const body = await response.json().catch(() => ({}));
     const message =
       typeof body.message === "string"
         ? body.message
-        : `Upload failed (${response.status})`;
+        : Array.isArray(body.message)
+          ? body.message.join(", ")
+          : `Upload failed (${response.status})`;
     throw new ApiError(message, response.status);
   }
   return response.json() as Promise<T>;
