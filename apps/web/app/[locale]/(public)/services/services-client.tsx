@@ -24,7 +24,7 @@ export function ServicesPageClient({
   const p = getDictionary(locale).pages;
 
   return (
-    <>
+    <div className="overflow-x-hidden">
       <section className="relative overflow-hidden border-b border-border/80">
         <div className="absolute inset-0">
           <Image
@@ -57,10 +57,11 @@ export function ServicesPageClient({
         </div>
       </section>
 
-      <section className="py-12 sm:py-16">
+      <section className="overflow-x-hidden py-12 sm:py-16">
         <p className="container-umq mb-8 text-center text-sm text-foreground-muted">
           {locale === "ar"
-            }
+            ? "انتظر قليلاً — البطاقات تتقلب تلقائياً"
+            : "Wait a moment — cards rotate automatically"}
         </p>
         <ServicesCarousel services={services} locale={locale} />
       </section>
@@ -113,6 +114,6 @@ export function ServicesPageClient({
           </StaggerList>
         </div>
       </section>
-    </>
+    </div>
   );
 }
