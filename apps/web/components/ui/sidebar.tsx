@@ -18,6 +18,7 @@ type SidebarProps = {
   navItems: AdminNavItem[];
   labels: Record<string, string>;
   panelLabel: string;
+  showUser?: boolean;
 };
 
 export function Sidebar({
@@ -26,6 +27,7 @@ export function Sidebar({
   navItems,
   labels,
   panelLabel,
+  showUser = true,
 }: SidebarProps) {
   const dict = getDictionary(locale);
   const pathname = usePathname();
@@ -50,7 +52,7 @@ export function Sidebar({
           <X className="h-5 w-5" />
         </button>
       </div>
-      {user && (
+      {showUser && user && (
         <div className="border-b border-border px-4 py-3 text-xs text-foreground-muted">
           <p className="font-medium text-foreground">{user.name}</p>
           <p>{user.role}</p>

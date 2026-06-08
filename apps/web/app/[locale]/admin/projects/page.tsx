@@ -10,6 +10,10 @@ import {
   AdminFormModal,
   contentStatusOptions,
 } from "@/components/admin/form-modal";
+import {
+  parseGalleryValue,
+  serializeGalleryValue,
+} from "@/components/admin/media-gallery-input";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -79,9 +83,16 @@ const projectFields = (locale: "ar" | "en") => [
     label: locale === "ar" ? "مميز" : "Featured",
     type: "checkbox" as const,
   },
+  {
+    name: "projectImages",
+    label: locale === "ar" ? "صور المشروع" : "Project images",
+    type: "images" as const,
+    uploadFolder: "projects",
+  },
 ];
 
 function toPayload(values: Record<string, string>) {
+  const gallery = parseGalleryValue(values.projectImages ?? "");
   return {
     slug: values.slug,
     titleAr: values.titleAr,
@@ -96,7 +107,24 @@ function toPayload(values: Record<string, string>) {
     order: Number(values.order || 0),
     status: values.status || "draft",
     featured: values.featured === "true",
+    imageMediaIds: gallery.map((item) => item.id),
   };
+}
+
+function buildProjectGallery(project: Project): string {
+  if (project.imageMediaIds?.length && project.imageUrls?.length) {
+    const items = project.imageMediaIds.map((id, index) => ({
+      id,
+      url: project.imageUrls?.[index] ?? "",
+    }));
+    return serializeGalleryValue(items.filter((item) => item.id && item.url));
+  }
+  if (project.coverImageUrl) {
+    return serializeGalleryValue([
+      { id: project.imageMediaIds?.[0] ?? "legacy-cover", url: project.coverImageUrl },
+    ]);
+  }
+  return "";
 }
 
 export default function AdminProjectsPage() {
@@ -119,12 +147,14 @@ export default function AdminProjectsPage() {
         order: String(editing.order ?? 0),
         status: editing.status ?? "draft",
         featured: editing.featured ? "true" : "false",
+        projectImages: buildProjectGallery(editing),
       }
     : {
         status: "published",
         featured: "false",
         order: "0",
         categorySlug: "enterprise",
+        projectImages: "",
       };
 
   if (loading) {

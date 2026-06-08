@@ -5,6 +5,11 @@ import { Modal } from "@/components/ui/modal";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { MediaCoverInput } from "@/components/admin/media-cover-input";
+import {
+  MediaGalleryInput,
+  parseGalleryValue,
+  serializeGalleryValue,
+} from "@/components/admin/media-gallery-input";
 import { ApiError } from "@/lib/api";
 
 export type FormField = {
@@ -18,7 +23,8 @@ export type FormField = {
     | "number"
     | "select"
     | "checkbox"
-    | "image";
+    | "image"
+    | "images";
   required?: boolean;
   placeholder?: string;
   options?: { value: string; label: string }[];
@@ -85,8 +91,8 @@ export function AdminFormModal({
     } catch (err) {
       if (err instanceof ApiError) {
         const msg =
-          err.status === 409 && locale === "ar"
-            ? "هذا البريد مسجّل مسبقاً — استخدم بريداً آخر"
+          err.status === 409
+            ? conflictMessage(locale, err.message)
             : err.message;
         setSubmitError(msg);
       } else {
@@ -105,6 +111,23 @@ export function AdminFormModal({
     <Modal open={open} onClose={onClose} title={title}>
       <div className="max-h-[70vh] space-y-4 overflow-y-auto pe-1">
         {fields.map((field) => {
+          if (field.type === "images") {
+            const galleryItems = parseGalleryValue(values[field.name] ?? "");
+            return (
+              <MediaGalleryInput
+                key={field.name}
+                items={galleryItems}
+                folder={field.uploadFolder ?? "general"}
+                locale={locale}
+                onChange={(items) => {
+                  setValues((v) => ({
+                    ...v,
+                    [field.name]: serializeGalleryValue(items),
+                  }));
+                }}
+              />
+            );
+          }
           if (field.type === "image") {
             return (
               <MediaCoverInput
@@ -216,3 +239,14 @@ export const contentStatusOptions = (locale: "ar" | "en") => [
   { value: "draft", label: locale === "ar" ? "مسودة" : "Draft" },
   { value: "inactive", label: locale === "ar" ? "غير نشط" : "Inactive" },
 ];
+
+function conflictMessage(locale: "ar" | "en", message: string): string {
+  if (locale === "en") return message;
+  if (/slug already exists/i.test(message)) {
+    return "رابط المشروع (Slug) مستخدم مسبقاً — غيّر قيمة Slug";
+  }
+  if (/email/i.test(message)) {
+    return "هذا البريد مسجّل مسبقاً — استخدم بريداً آخر";
+  }
+  return message;
+}

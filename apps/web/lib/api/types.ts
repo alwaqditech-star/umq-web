@@ -77,6 +77,8 @@ export interface Project extends BaseEntity {
   category: string;
   categoryId?: string | null;
   coverImageUrl?: string;
+  imageUrls?: string[];
+  imageMediaIds?: string[];
   featured?: boolean;
   order?: number;
   status?: EntityStatus;

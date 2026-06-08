@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { api } from "@/lib/api";
 import { FadeUp } from "@/components/motion/fade-up";
+import { ProjectImageCarousel } from "@/components/public/project-image-carousel";
 import { Badge } from "@/components/ui/badge";
 import { localized } from "@/lib/i18n/dictionaries";
 import { isValidLocale, localePath } from "@/lib/i18n/routes";
@@ -35,7 +36,21 @@ export default async function ProjectDetailPage({
           {locale === "ar" ? "← المشاريع" : "← Projects"}
         </Link>
         {project.category && <Badge className="mt-6">{project.category}</Badge>}
-        <h1 className="mt-4 text-4xl font-bold">
+        <div className="relative mt-8 max-w-4xl overflow-hidden rounded-2xl">
+          <ProjectImageCarousel
+            images={
+              project.imageUrls?.length
+                ? project.imageUrls
+                : project.coverImageUrl
+                  ? [project.coverImageUrl]
+                  : []
+            }
+            alt={localized(locale, project, "titleAr", "titleEn")}
+            aspectClassName="aspect-[16/9]"
+            sizes="(max-width:1024px) 100vw, 896px"
+          />
+        </div>
+        <h1 className="mt-8 text-4xl font-bold">
           {localized(locale, project, "titleAr", "titleEn")}
         </h1>
         <p className="mt-4 max-w-3xl text-lg text-foreground-muted">

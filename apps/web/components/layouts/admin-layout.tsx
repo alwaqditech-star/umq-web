@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { LogOut, Menu, Moon, Sun } from "lucide-react";
+import { useEffect, useState } from "react";
 import { api } from "@/lib/api";
 import { useAuthStore } from "@/stores/auth-store";
 import { Sidebar } from "@/components/ui/sidebar";
@@ -29,6 +30,15 @@ export function AdminLayout({
   const hasPermission = useAuthStore((s) => s.hasPermission);
   const user = useAuthStore((s) => s.user);
   const router = useRouter();
+  const [navReady, setNavReady] = useState(false);
+
+  useEffect(() => {
+    setNavReady(true);
+  }, []);
+
+  const navItems = navReady
+    ? filterNavByPermissions(adminNavItems, hasPermission)
+    : adminNavItems.filter((item) => item.permissions.length === 0);
 
   const handleLogout = async () => {
     await api.auth.logout();
@@ -77,9 +87,10 @@ export function AdminLayout({
       <Sidebar
         locale={locale}
         homeHref="/admin"
-        navItems={filterNavByPermissions(adminNavItems, hasPermission)}
+        navItems={navItems}
         labels={navLabels}
         panelLabel="Admin navigation"
+        showUser={navReady}
       />
       <div className="flex min-w-0 flex-1 flex-col lg:ps-64">
         <header className="sticky top-0 z-30 flex h-16 items-center justify-between gap-4 border-b border-border bg-surface/90 px-4 backdrop-blur-md sm:px-6">
@@ -94,8 +105,8 @@ export function AdminLayout({
             </button>
             <div>
               <p className="text-xs text-foreground-muted">
-                {user?.name ?? dict.admin.welcome}
-                {user?.role ? ` · ${user.role}` : ""}
+                {navReady && user?.name ? user.name : dict.admin.welcome}
+                {navReady && user?.role ? ` · ${user.role}` : ""}
               </p>
               <h1 className="text-lg font-semibold text-foreground">
                 {pageTitle}

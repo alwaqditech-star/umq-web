@@ -1,9 +1,9 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import Image from "next/image";
 import Link from "next/link";
 import { PageHeader } from "@/components/public/page-header";
+import { ProjectImageCarousel } from "@/components/public/project-image-carousel";
 import { StaggerList, StaggerItem } from "@/components/motion/stagger-list";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -12,7 +12,6 @@ import type { Project } from "@/lib/api/types";
 import { getDictionary, localized } from "@/lib/i18n/dictionaries";
 import { localePath } from "@/lib/i18n/routes";
 import type { Locale } from "@/stores/ui-store";
-import { cn } from "@/lib/utils";
 
 export function ProjectsPageClient({
   locale,
@@ -60,21 +59,19 @@ export function ProjectsPageClient({
             <StaggerItem key={project.id}>
               <Card hover elevated className="group h-full overflow-hidden p-0">
                 <Link href={localePath(locale, `/projects/${project.slug}`)}>
-                  <div
-                    className={cn(
-                      "relative aspect-[16/10] overflow-hidden bg-gradient-to-br from-primary/10 to-accent/15",
-                    )}
-                  >
-                    {project.coverImageUrl ? (
-                      <Image
-                        src={project.coverImageUrl}
-                        alt={localized(locale, project, "titleAr", "titleEn")}
-                        fill
-                        className="object-cover transition-transform duration-500 group-hover:scale-105"
-                        sizes="(max-width:768px) 100vw, 50vw"
-                      />
-                    ) : null}
-                    <div className="absolute inset-0 bg-primary/0 transition-colors group-hover:bg-primary/10" />
+                  <div className="relative overflow-hidden">
+                    <ProjectImageCarousel
+                      images={
+                        project.imageUrls?.length
+                          ? project.imageUrls
+                          : project.coverImageUrl
+                            ? [project.coverImageUrl]
+                            : []
+                      }
+                      alt={localized(locale, project, "titleAr", "titleEn")}
+                      className="transition-transform duration-500 group-hover:scale-105"
+                    />
+                    <div className="pointer-events-none absolute inset-0 bg-primary/0 transition-colors group-hover:bg-primary/10" />
                   </div>
                   <div className="p-6">
                     <Badge variant="accent">{project.category}</Badge>
