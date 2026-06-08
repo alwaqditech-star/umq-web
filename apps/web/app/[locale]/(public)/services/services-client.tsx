@@ -7,7 +7,7 @@ import { ServicesCarousel } from "@/components/services/services-carousel";
 import { StaggerList, StaggerItem } from "@/components/motion/stagger-list";
 import type { Service } from "@/lib/api/types";
 import { getDictionary, localized } from "@/lib/i18n/dictionaries";
-import { serviceGradientMap, serviceIconMap } from "@/lib/icons";
+import { serviceIconMap } from "@/lib/icons";
 import { cn } from "@/lib/utils";
 import type { Locale } from "@/stores/ui-store";
 
@@ -25,19 +25,18 @@ export function ServicesPageClient({
 
   return (
     <>
-      {/* Hero with blurred office background — inspired by mobile mock */}
       <section className="relative overflow-hidden border-b border-border/80">
         <div className="absolute inset-0">
           <Image
             src={HERO_IMAGE}
             alt=""
             fill
-            className="object-cover opacity-25 blur-[2px] dark:opacity-15"
+            className="object-cover opacity-20 blur-[2px] dark:opacity-10"
             sizes="100vw"
             priority
             unoptimized
           />
-          <div className="absolute inset-0 bg-gradient-to-b from-surface/60 via-surface/85 to-surface" />
+          <div className="absolute inset-0 bg-gradient-to-b from-surface/70 via-surface/90 to-surface" />
         </div>
 
         <div className="container-umq relative py-14 sm:py-20">
@@ -58,18 +57,15 @@ export function ServicesPageClient({
         </div>
       </section>
 
-      {/* 3D carousel */}
-      <section className="container-umq py-12 sm:py-16">
-        <p className="mb-8 text-center text-sm text-foreground-muted">
+      <section className="py-12 sm:py-16">
+        <p className="container-umq mb-8 text-center text-sm text-foreground-muted">
           {locale === "ar"
-            ? "اسحب أو انتظر — البطاقات تتقلب تلقائياً"
-            : "Swipe or wait — cards rotate automatically"}
+            }
         </p>
         <ServicesCarousel services={services} locale={locale} />
       </section>
 
-      {/* Full services grid */}
-      <section className="border-t border-border/60 bg-surface/30 py-14 sm:py-20">
+      <section className="border-t border-border/60 bg-subtle/50 py-14 sm:py-20">
         <div className="container-umq">
           <h2 className="text-center text-2xl font-bold sm:text-3xl">
             {locale === "ar" ? "جميع خدماتنا" : "All our services"}
@@ -83,37 +79,29 @@ export function ServicesPageClient({
           <StaggerList className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
             {services.map((service) => {
               const Icon = serviceIconMap[service.icon] ?? Layers;
-              const gradient =
-                serviceGradientMap[service.icon] ??
-                "from-accent/80 to-primary/80";
 
               return (
                 <StaggerItem key={service.id}>
                   <article
                     className={cn(
                       "group flex h-full flex-col overflow-hidden rounded-2xl border border-border/80 bg-surface",
-                      "shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-accent/30 hover:shadow-xl",
+                      "shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-accent/35 hover:shadow-lg",
                     )}
                   >
-                    <div
-                      className={cn(
-                        "flex h-28 items-center justify-center bg-gradient-to-br",
-                        gradient,
-                      )}
-                    >
-                      <div className="flex h-14 w-14 items-center justify-center rounded-xl bg-white/20 backdrop-blur-sm transition-transform duration-300 group-hover:scale-110">
-                        <Icon className="h-7 w-7 text-white" />
+                    <div className="flex h-24 items-center justify-center border-b border-border/50 bg-accent/5">
+                      <div className="flex h-14 w-14 items-center justify-center rounded-xl border border-accent/20 bg-accent/10 text-accent transition-transform duration-300 group-hover:scale-105 group-hover:bg-accent/15">
+                        <Icon className="h-7 w-7" />
                       </div>
                     </div>
                     <div className="flex flex-1 flex-col p-5">
-                      <h3 className="text-lg font-bold">
+                      <h3 className="text-lg font-bold text-foreground">
                         {localized(locale, service, "titleAr", "titleEn")}
                       </h3>
                       <p className="mt-2 flex-1 text-sm leading-relaxed text-foreground-muted">
                         {localized(locale, service, "summaryAr", "summaryEn")}
                       </p>
                       {service.featured && (
-                        <span className="mt-4 inline-flex w-fit rounded-full bg-accent/10 px-2.5 py-0.5 text-[10px] font-semibold text-accent">
+                        <span className="mt-4 inline-flex w-fit rounded-full bg-primary/8 px-2.5 py-0.5 text-[10px] font-semibold text-primary">
                           {locale === "ar" ? "خدمة مميزة" : "Featured"}
                         </span>
                       )}
