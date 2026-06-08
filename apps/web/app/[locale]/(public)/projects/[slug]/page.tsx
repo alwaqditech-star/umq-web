@@ -1,10 +1,10 @@
+import Image from "next/image";
 import Link from "next/link";
 import { api } from "@/lib/api";
 import { FadeUp } from "@/components/motion/fade-up";
-import { ProjectImageCarousel } from "@/components/public/project-image-carousel";
 import { Badge } from "@/components/ui/badge";
 import { localized } from "@/lib/i18n/dictionaries";
-import { getProjectImages } from "@/lib/media-url";
+import { isProxiedMediaUrl, resolveMediaUrl } from "@/lib/media-url";
 import { isValidLocale, localePath } from "@/lib/i18n/routes";
 import { notFound } from "next/navigation";
 import type { Locale } from "@/stores/ui-store";
@@ -27,6 +27,8 @@ export default async function ProjectDetailPage({
     notFound();
   }
 
+  const coverSrc = resolveMediaUrl(project.coverImageUrl);
+
   return (
     <article className="container-umq py-16">
       <FadeUp>
@@ -37,16 +39,19 @@ export default async function ProjectDetailPage({
           {locale === "ar" ? "← المشاريع" : "← Projects"}
         </Link>
         {project.category && <Badge className="mt-6">{project.category}</Badge>}
-        <div className="relative mt-8 max-w-4xl overflow-hidden rounded-2xl">
-          <ProjectImageCarousel
-            images={getProjectImages(project)}
-            alt={localized(locale, project, "titleAr", "titleEn")}
-            aspectClassName="aspect-[16/9]"
-            sizes="(max-width:1024px) 100vw, 896px"
-            showThumbnails
-            locale={locale}
-          />
-        </div>
+        {coverSrc ? (
+          <div className="relative mt-8 aspect-[16/9] max-w-4xl overflow-hidden rounded-2xl bg-accent/10">
+            <Image
+              src={coverSrc}
+              alt={localized(locale, project, "titleAr", "titleEn")}
+              fill
+              className="object-cover"
+              sizes="(max-width:1024px) 100vw, 896px"
+              priority
+              unoptimized={isProxiedMediaUrl(coverSrc)}
+            />
+          </div>
+        ) : null}
         <h1 className="mt-8 text-4xl font-bold">
           {localized(locale, project, "titleAr", "titleEn")}
         </h1>

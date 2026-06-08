@@ -1,17 +1,17 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import Image from "next/image";
 import Link from "next/link";
 import { PageHeader } from "@/components/public/page-header";
-import { ProjectImageCarousel } from "@/components/public/project-image-carousel";
 import { StaggerList, StaggerItem } from "@/components/motion/stagger-list";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import type { Project } from "@/lib/api/types";
-import { getProjectImages } from "@/lib/media-url";
 import { getDictionary, localized } from "@/lib/i18n/dictionaries";
 import { localePath } from "@/lib/i18n/routes";
+import { isProxiedMediaUrl, resolveMediaUrl } from "@/lib/media-url";
 import type { Locale } from "@/stores/ui-store";
 
 export function ProjectsPageClient({
@@ -56,36 +56,41 @@ export function ProjectsPageClient({
         </div>
 
         <StaggerList className="grid gap-8 sm:grid-cols-2">
-          {filtered.map((project) => (
-            <StaggerItem key={project.id}>
-              <Card hover elevated className="group h-full overflow-hidden p-0">
-                <Link href={localePath(locale, `/projects/${project.slug}`)}>
-                  <div className="relative overflow-hidden">
-                    <ProjectImageCarousel
-                      images={getProjectImages(project)}
-                      alt={localized(locale, project, "titleAr", "titleEn")}
-                      className="transition-transform duration-500 group-hover:scale-105"
-                      locale={locale}
-                      autoPlay={false}
-                    />
-                    <div className="pointer-events-none absolute inset-0 bg-primary/0 transition-colors group-hover:bg-primary/10" />
-                  </div>
-                  <div className="p-6">
-                    <Badge variant="accent">{project.category}</Badge>
-                    <h2 className="mt-3 text-2xl font-semibold transition-colors group-hover:text-accent">
-                      {localized(locale, project, "titleAr", "titleEn")}
-                    </h2>
-                    <p className="mt-2 text-foreground-muted line-clamp-2">
-                      {localized(locale, project, "summaryAr", "summaryEn")}
-                    </p>
-                    <p className="mt-4 text-sm text-foreground-muted">
-                      {project.clientName}
-                    </p>
-                  </div>
-                </Link>
-              </Card>
-            </StaggerItem>
-          ))}
+          {filtered.map((project) => {
+            const coverSrc = resolveMediaUrl(project.coverImageUrl);
+            return (
+              <StaggerItem key={project.id}>
+                <Card hover elevated className="group h-full overflow-hidden p-0">
+                  <Link href={localePath(locale, `/projects/${project.slug}`)}>
+                    <div className="relative aspect-[16/10] bg-accent/10">
+                      {coverSrc ? (
+                        <Image
+                          src={coverSrc}
+                          alt={localized(locale, project, "titleAr", "titleEn")}
+                          fill
+                          className="object-cover transition-transform duration-500 group-hover:scale-105"
+                          sizes="(max-width:768px) 100vw, 50vw"
+                          unoptimized={isProxiedMediaUrl(coverSrc)}
+                        />
+                      ) : null}
+                    </div>
+                    <div className="p-6">
+                      <Badge variant="accent">{project.category}</Badge>
+                      <h2 className="mt-3 text-2xl font-semibold transition-colors group-hover:text-accent">
+                        {localized(locale, project, "titleAr", "titleEn")}
+                      </h2>
+                      <p className="mt-2 text-foreground-muted line-clamp-2">
+                        {localized(locale, project, "summaryAr", "summaryEn")}
+                      </p>
+                      <p className="mt-4 text-sm text-foreground-muted">
+                        {project.clientName}
+                      </p>
+                    </div>
+                  </Link>
+                </Card>
+              </StaggerItem>
+            );
+          })}
         </StaggerList>
       </div>
     </>

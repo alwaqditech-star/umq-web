@@ -76,9 +76,8 @@ export interface Project extends BaseEntity {
   technologies: string[];
   category: string;
   categoryId?: string | null;
+  coverMediaId?: string | null;
   coverImageUrl?: string;
-  imageUrls?: string[];
-  imageMediaIds?: string[];
   featured?: boolean;
   order?: number;
   status?: EntityStatus;

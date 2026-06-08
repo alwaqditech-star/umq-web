@@ -10,10 +10,6 @@ import {
   AdminFormModal,
   contentStatusOptions,
 } from "@/components/admin/form-modal";
-import {
-  parseGalleryValue,
-  serializeGalleryValue,
-} from "@/components/admin/media-gallery-input";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -26,7 +22,7 @@ import {
 } from "@/components/ui/table";
 import { localized } from "@/lib/i18n/dictionaries";
 import { useLocale } from "@/lib/i18n/use-locale";
-import { mediaFilePath } from "@/lib/media-url";
+import { resolveMediaUrl } from "@/lib/media-url";
 import { useAuthStore } from "@/stores/auth-store";
 
 const projectFields = (locale: "ar" | "en") => [
@@ -85,15 +81,22 @@ const projectFields = (locale: "ar" | "en") => [
     type: "checkbox" as const,
   },
   {
-    name: "projectImages",
-    label: locale === "ar" ? "صور المشروع" : "Project images",
-    type: "images" as const,
+    name: "coverMediaId",
+    label: locale === "ar" ? "صورة الغلاف" : "Cover image",
+    type: "image" as const,
     uploadFolder: "projects",
+  },
+  {
+    name: "coverExternalUrl",
+    label:
+      locale === "ar"
+        ? "أو رابط صورة خارجي (https)"
+        : "Or external image URL (https)",
+    placeholder: "https://images.unsplash.com/...",
   },
 ];
 
 function toPayload(values: Record<string, string>) {
-  const gallery = parseGalleryValue(values.projectImages ?? "");
   return {
     slug: values.slug,
     titleAr: values.titleAr,
@@ -108,28 +111,15 @@ function toPayload(values: Record<string, string>) {
     order: Number(values.order || 0),
     status: values.status || "draft",
     featured: values.featured === "true",
-    imageMediaIds: gallery.map((item) => item.id),
-    imageUrls: gallery.map((item) => item.url),
+    coverMediaId: values.coverMediaId?.trim() || null,
+    coverExternalUrl: values.coverExternalUrl?.trim() || undefined,
   };
 }
 
-function buildProjectGallery(project: Project): string {
-  if (project.imageMediaIds?.length) {
-    const items = project.imageMediaIds.map((id, index) => ({
-      id,
-      url: project.imageUrls?.[index] ?? mediaFilePath(id),
-    }));
-    return serializeGalleryValue(items.filter((item) => item.id));
-  }
-  if (project.coverImageUrl) {
-    return serializeGalleryValue([
-      {
-        id: project.imageMediaIds?.[0] ?? "legacy-cover",
-        url: project.coverImageUrl,
-      },
-    ]);
-  }
-  return "";
+function externalUrlFromCover(coverImageUrl?: string): string {
+  const url = coverImageUrl?.trim() ?? "";
+  if (!url.startsWith("http://") && !url.startsWith("https://")) return "";
+  return url;
 }
 
 export default function AdminProjectsPage() {
@@ -143,24 +133,6 @@ export default function AdminProjectsPage() {
     [],
   );
   const { items, loading, reload } = useAdminList(load);
-
-  const initial = editing
-    ? {
-        ...editing,
-        technologies: editing.technologies.join(", "),
-        categorySlug: "",
-        order: String(editing.order ?? 0),
-        status: editing.status ?? "draft",
-        featured: editing.featured ? "true" : "false",
-        projectImages: buildProjectGallery(editing),
-      }
-    : {
-        status: "published",
-        featured: "false",
-        order: "0",
-        categorySlug: "enterprise",
-        projectImages: "",
-      };
 
   if (loading) {
     return <AdminPageSkeleton />;
@@ -239,7 +211,43 @@ export default function AdminProjectsPage() {
         onClose={() => setOpen(false)}
         title={editing ? "Edit project" : "Add project"}
         fields={projectFields(locale)}
-        initialValues={initial as Record<string, string>}
+        initialValues={
+          editing
+            ? {
+                slug: editing.slug,
+                titleAr: editing.titleAr,
+                titleEn: editing.titleEn,
+                summaryAr: editing.summaryAr,
+                summaryEn: editing.summaryEn,
+                contentAr: editing.contentAr ?? "",
+                contentEn: editing.contentEn ?? "",
+                clientName: editing.clientName,
+                technologies: editing.technologies.join(", "),
+                categorySlug: "",
+                order: String(editing.order ?? 0),
+                status: editing.status ?? "draft",
+                featured: editing.featured ? "true" : "false",
+                coverMediaId: editing.coverMediaId ?? "",
+                coverExternalUrl: externalUrlFromCover(editing.coverImageUrl),
+              }
+            : {
+                status: "published",
+                featured: "false",
+                order: "0",
+                categorySlug: "enterprise",
+                coverMediaId: "",
+                coverExternalUrl: "",
+              }
+        }
+        imagePreviews={
+          editing?.coverImageUrl
+            ? {
+                coverMediaId:
+                  resolveMediaUrl(editing.coverImageUrl) ??
+                  editing.coverImageUrl,
+              }
+            : {}
+        }
         locale={locale}
         submitLabel="Save"
         onSubmit={async (values) => {
