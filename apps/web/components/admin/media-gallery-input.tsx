@@ -6,6 +6,7 @@ import { GripVertical, ImagePlus, X } from "lucide-react";
 import { api } from "@/lib/api";
 import { ApiError, isApiConnectionError } from "@/lib/api/http/client";
 import { resolveMediaUrl } from "@/lib/media-url";
+import { fileWithSafeName } from "@/lib/safe-upload-filename";
 import { Button } from "@/components/ui/button";
 
 export type GalleryItem = { id: string; url: string };
@@ -36,7 +37,7 @@ export function MediaGalleryInput({
     setUploading(true);
     try {
       const fd = new FormData();
-      fd.append("file", file);
+      fd.append("file", fileWithSafeName(file));
       fd.append("folder", folder);
       const uploaded = await api.cms.media.upload(fd);
       onChange([...items, { id: uploaded.id, url: uploaded.url }]);

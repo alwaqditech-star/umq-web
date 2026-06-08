@@ -1,12 +1,12 @@
 "use client";
 
-import Image from "next/image";
 import { useCallback, useRef, useState } from "react";
 import { useAdminList } from "@/hooks/use-admin-list";
 import { AdminPageSkeleton } from "@/components/admin/admin-page-skeleton";
 import { api } from "@/lib/api";
 import { Button } from "@/components/ui/button";
-import { resolveMediaUrl } from "@/lib/media-url";
+import { getMediaSrcCandidates } from "@/lib/media-url";
+import { fileWithSafeName } from "@/lib/safe-upload-filename";
 import { useLocale } from "@/lib/i18n/use-locale";
 
 type MediaItem = {
@@ -17,6 +17,36 @@ type MediaItem = {
   size: number;
   folder: string;
 };
+
+function MediaThumb({ item }: { item: MediaItem }) {
+  const candidates = getMediaSrcCandidates(item.url);
+  const [srcIndex, setSrcIndex] = useState(0);
+  const src = candidates[srcIndex];
+
+  if (!src) {
+    return (
+      <div className="flex h-32 items-center justify-center rounded-lg bg-surface text-xs text-foreground-muted">
+        —
+      </div>
+    );
+  }
+
+  return (
+    <div className="relative h-32 w-full overflow-hidden rounded-lg bg-surface">
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img
+        src={src}
+        alt={item.filename}
+        className="h-full w-full object-cover"
+        onError={() => {
+          if (srcIndex + 1 < candidates.length) {
+            setSrcIndex((i) => i + 1);
+          }
+        }}
+      />
+    </div>
+  );
+}
 
 export default function AdminMediaPage() {
   const locale = useLocale();
@@ -36,7 +66,7 @@ export default function AdminMediaPage() {
     setUploading(true);
     try {
       const fd = new FormData();
-      fd.append("file", file);
+      fd.append("file", fileWithSafeName(file));
       fd.append("folder", folder);
       await api.cms.media.upload(fd);
       if (fileRef.current) fileRef.current.value = "";
@@ -86,16 +116,7 @@ export default function AdminMediaPage() {
             className="rounded-2xl border border-border p-4 space-y-2"
           >
             {item.mimeType.startsWith("image/") ? (
-              <div className="relative h-32 w-full overflow-hidden rounded-lg">
-                <Image
-                  src={resolveMediaUrl(item.url) ?? item.url}
-                  alt={item.filename}
-                  fill
-                  className="object-cover"
-                  sizes="(max-width: 768px) 100vw, 33vw"
-                  unoptimized
-                />
-              </div>
+              <MediaThumb item={item} />
             ) : (
               <div className="flex h-32 items-center justify-center rounded-lg bg-surface text-sm">
                 {item.mimeType}

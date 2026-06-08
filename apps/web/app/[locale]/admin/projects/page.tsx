@@ -86,41 +86,7 @@ const projectFields = (locale: "ar" | "en") => [
     type: "image" as const,
     uploadFolder: "projects",
   },
-  {
-    name: "coverExternalUrl",
-    label:
-      locale === "ar"
-        ? "أو رابط صورة خارجي (https)"
-        : "Or external image URL (https)",
-    placeholder: "https://images.unsplash.com/...",
-  },
 ];
-
-function toPayload(values: Record<string, string>) {
-  return {
-    slug: values.slug,
-    titleAr: values.titleAr,
-    titleEn: values.titleEn,
-    summaryAr: values.summaryAr,
-    summaryEn: values.summaryEn,
-    contentAr: values.contentAr,
-    contentEn: values.contentEn,
-    clientName: values.clientName,
-    technologies: values.technologies,
-    categorySlug: values.categorySlug || undefined,
-    order: Number(values.order || 0),
-    status: values.status || "draft",
-    featured: values.featured === "true",
-    coverMediaId: values.coverMediaId?.trim() || null,
-    coverExternalUrl: values.coverExternalUrl?.trim() || undefined,
-  };
-}
-
-function externalUrlFromCover(coverImageUrl?: string): string {
-  const url = coverImageUrl?.trim() ?? "";
-  if (!url.startsWith("http://") && !url.startsWith("https://")) return "";
-  return url;
-}
 
 export default function AdminProjectsPage() {
   const locale = useLocale();
@@ -228,7 +194,6 @@ export default function AdminProjectsPage() {
                 status: editing.status ?? "draft",
                 featured: editing.featured ? "true" : "false",
                 coverMediaId: editing.coverMediaId ?? "",
-                coverExternalUrl: externalUrlFromCover(editing.coverImageUrl),
               }
             : {
                 status: "published",
@@ -236,7 +201,6 @@ export default function AdminProjectsPage() {
                 order: "0",
                 categorySlug: "enterprise",
                 coverMediaId: "",
-                coverExternalUrl: "",
               }
         }
         imagePreviews={
@@ -251,7 +215,22 @@ export default function AdminProjectsPage() {
         locale={locale}
         submitLabel="Save"
         onSubmit={async (values) => {
-          const payload = toPayload(values);
+          const payload = {
+            slug: values.slug,
+            titleAr: values.titleAr,
+            titleEn: values.titleEn,
+            summaryAr: values.summaryAr,
+            summaryEn: values.summaryEn,
+            contentAr: values.contentAr,
+            contentEn: values.contentEn,
+            clientName: values.clientName,
+            technologies: values.technologies,
+            categorySlug: values.categorySlug || undefined,
+            order: Number(values.order || 0),
+            status: values.status || "draft",
+            featured: values.featured === "true",
+            coverMediaId: values.coverMediaId?.trim() || null,
+          };
           if (editing) await api.projects.update(editing.id, payload);
           else await api.projects.create(payload);
           await reload();
