@@ -1,5 +1,3 @@
-import type { Project } from "@/lib/api/types";
-
 const MEDIA_FILE_RE = /\/media\/files\/([^?#]+)/;
 const FALLBACK_API_ORIGIN = "https://umq-api-api.vercel.app";
 
@@ -45,37 +43,6 @@ export function resolveMediaUrl(url?: string | null): string | undefined {
   }
 
   return trimmed.startsWith("/") ? trimmed : undefined;
-}
-
-/** Collect ordered project gallery (cover first). */
-export function getProjectImages(
-  project: Pick<Project, "imageUrls" | "imageMediaIds" | "coverImageUrl">,
-): string[] {
-  const ids = (project.imageMediaIds ?? [])
-    .map((id) => id.trim())
-    .filter(Boolean);
-  const urls = (project.imageUrls ?? [])
-    .map((url) => url.trim())
-    .filter(Boolean);
-
-  let sources: string[] = [];
-
-  if (urls.length > 0) {
-    sources = urls;
-  } else if (ids.length > 0) {
-    sources = ids.map((id) => mediaFilePath(id));
-  } else {
-    const cover = project.coverImageUrl?.trim();
-    if (cover) sources = [cover];
-  }
-
-  const seen = new Set<string>();
-  return sources.filter((src) => {
-    const key = resolveMediaUrl(src) ?? src;
-    if (seen.has(key)) return false;
-    seen.add(key);
-    return true;
-  });
 }
 
 /** Proxied API media should skip Next image optimizer (rewrite-friendly). */
