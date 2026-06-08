@@ -1,9 +1,8 @@
 "use client";
 
-import Link from "next/link";
 import { motion } from "framer-motion";
+import { BrandLogo } from "@/components/brand/brand-logo";
 import { getDictionary } from "@/lib/i18n/dictionaries";
-import { localePath } from "@/lib/i18n/routes";
 import type { Locale } from "@/stores/ui-store";
 
 export function AuthLayout({
@@ -27,14 +26,9 @@ export function AuthLayout({
         transition={{ duration: 0.4 }}
         className="relative z-10 w-full max-w-md"
       >
-        <div className="mb-8 text-center">
-          <Link
-            href={localePath(locale, "")}
-            className="text-2xl font-bold text-gradient"
-          >
-            {dict.brandFull}
-          </Link>
-          <p className="mt-2 text-sm text-foreground-muted">{dict.tagline}</p>
+        <div className="mb-8 flex flex-col items-center text-center">
+          <BrandLogo locale={locale} size="lg" className="mx-auto object-center" />
+          <p className="mt-4 text-sm text-foreground-muted">{dict.tagline}</p>
         </div>
         <div className="glass rounded-3xl p-8 shadow-lg">{children}</div>
       </motion.div>

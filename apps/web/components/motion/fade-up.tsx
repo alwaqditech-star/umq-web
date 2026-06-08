@@ -15,7 +15,7 @@ export function FadeUp({
   delay?: number;
 }) {
   const ref = useRef(null);
-  const inView = useInView(ref, { once: true, margin: "-80px" });
+  const inView = useInView(ref, { once: true, margin: "-10% 0px -5% 0px" });
 
   return (
     <motion.div

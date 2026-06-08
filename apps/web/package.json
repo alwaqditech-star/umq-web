@@ -36,6 +36,7 @@
     "@umq/typescript-config": "workspace:*",
     "eslint": "^9.39.1",
     "postcss": "^8.5.15",
+    "sharp": "^0.34.5",
     "tailwindcss": "^4.3.0",
     "typescript": "5.9.2"
   }

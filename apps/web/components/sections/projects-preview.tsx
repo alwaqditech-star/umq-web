@@ -1,11 +1,9 @@
 "use client";
 
-import Link from "next/link";
 import { StaggerList, StaggerItem } from "@/components/motion/stagger-list";
-import { FadeUp } from "@/components/motion/fade-up";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
+import { SectionHeader } from "@/components/sections/section-header";
 import type { Project } from "@/lib/api/types";
 import { localized, getDictionary } from "@/lib/i18n/dictionaries";
 import { localePath } from "@/lib/i18n/routes";
@@ -24,22 +22,16 @@ export function ProjectsPreview({
   return (
     <section className="section-alt border-y border-border/50 py-20 sm:py-24">
       <div className="container-umq">
-        <FadeUp className="flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-end">
-          <div>
-            <span className="section-kicker">
-              {locale === "ar" ? "أعمالنا" : "Portfolio"}
-            </span>
-            <h2 className="mt-4 text-3xl font-bold sm:text-4xl">
-              {dict.sections.projects}
-            </h2>
-            <p className="mt-2 text-foreground-muted">
-              {locale === "ar" ? "أعمال نفخر بها." : "Work we're proud of."}
-            </p>
-          </div>
-          <Link href={localePath(locale, "/projects")}>
-            <Button variant="ghost">{dict.cta.viewAll}</Button>
-          </Link>
-        </FadeUp>
+        <SectionHeader
+          locale={locale}
+          kicker={locale === "ar" ? "أعمالنا" : "Portfolio"}
+          title={dict.sections.projects}
+          description={
+            locale === "ar" ? "أعمال نفخر بها." : "Work we're proud of."
+          }
+          href={localePath(locale, "/projects")}
+          linkLabel={dict.cta.viewAll}
+        />
         <StaggerList className="mt-10 grid gap-6 lg:grid-cols-3">
           {featured.map((project) => (
             <StaggerItem key={project.id}>

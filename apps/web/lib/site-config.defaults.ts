@@ -13,12 +13,16 @@ export interface ContactInfoSettings {
   email: string;
   phone: string;
   whatsapp: string;
+  xUrl?: string;
   addressAr: string;
   addressEn: string;
   hoursAr: string;
   hoursEn: string;
+  mapUrl?: string;
   mapEmbedUrl?: string;
 }
+
+const MAKKAH_MAP_QUERY = "مكة المكرمة، المملكة العربية السعودية";
 
 const SECTION_DEFAULTS: Record<
   string,
@@ -57,24 +61,67 @@ export const DEFAULT_CONTACT: ContactInfoSettings = {
   email: "umqTech2026@gmail.com",
   phone: "+966 55 991 8514",
   whatsapp: "+966559918514",
-  addressAr: "الرياض، المملكة العربية السعودية",
-  addressEn: "Riyadh, Saudi Arabia",
+  xUrl: "https://x.com/UMQTech",
+  addressAr: "مكة المكرمة، المملكة العربية السعودية",
+  addressEn: "Makkah, Saudi Arabia",
   hoursAr: "الأحد – الخميس، 9 ص – 6 م",
   hoursEn: "Sun – Thu, 9 AM – 6 PM",
+  mapUrl: "https://maps.app.goo.gl/oGQYRNwz2bF2ZtXC7",
+  mapEmbedUrl: `https://maps.google.com/maps?q=${encodeURIComponent(MAKKAH_MAP_QUERY)}&hl=ar&z=16&output=embed`,
 };
+
+/** عناوين/خرائط قديمة في قاعدة البيانات تُستبدل بموقع مكة الافتراضي */
+const LEGACY_LOCATION_RE =
+  /جدة|jeddah|الرياض|riyadh|العليا|olaya|kingdom\s*cent/i;
+
+function usesLegacyLocation(contact: Partial<ContactInfoSettings>): boolean {
+  const haystack = [
+    contact.addressAr,
+    contact.addressEn,
+    contact.mapUrl,
+    contact.mapEmbedUrl,
+  ]
+    .filter(Boolean)
+    .join(" ");
+  return LEGACY_LOCATION_RE.test(haystack);
+}
+
+function resolveLocationFields(
+  contact: Partial<ContactInfoSettings>,
+): Pick<
+  ContactInfoSettings,
+  "addressAr" | "addressEn" | "mapUrl" | "mapEmbedUrl"
+> {
+  if (usesLegacyLocation(contact)) {
+    return {
+      addressAr: DEFAULT_CONTACT.addressAr,
+      addressEn: DEFAULT_CONTACT.addressEn,
+      mapUrl: DEFAULT_CONTACT.mapUrl,
+      mapEmbedUrl: DEFAULT_CONTACT.mapEmbedUrl,
+    };
+  }
+
+  return {
+    addressAr: contact.addressAr ?? DEFAULT_CONTACT.addressAr,
+    addressEn: contact.addressEn ?? DEFAULT_CONTACT.addressEn,
+    mapUrl: contact.mapUrl ?? DEFAULT_CONTACT.mapUrl,
+    mapEmbedUrl: contact.mapEmbedUrl ?? DEFAULT_CONTACT.mapEmbedUrl,
+  };
+}
 
 export function parseContactFromPublicSettings(
   data: Record<string, unknown>,
 ): ContactInfoSettings {
   const contact = (data["contact.info"] ?? {}) as Partial<ContactInfoSettings>;
+  const location = resolveLocationFields(contact);
+
   return {
     email: contact.email ?? DEFAULT_CONTACT.email,
     phone: contact.phone ?? DEFAULT_CONTACT.phone,
     whatsapp: contact.whatsapp ?? DEFAULT_CONTACT.whatsapp,
-    addressAr: contact.addressAr ?? DEFAULT_CONTACT.addressAr,
-    addressEn: contact.addressEn ?? DEFAULT_CONTACT.addressEn,
+    xUrl: contact.xUrl ?? DEFAULT_CONTACT.xUrl,
+    ...location,
     hoursAr: contact.hoursAr ?? DEFAULT_CONTACT.hoursAr,
     hoursEn: contact.hoursEn ?? DEFAULT_CONTACT.hoursEn,
-    mapEmbedUrl: contact.mapEmbedUrl,
   };
 }

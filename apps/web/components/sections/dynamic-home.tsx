@@ -9,6 +9,7 @@ import { PartnersSection } from "@/components/sections/partners-section";
 import { TeamSection } from "@/components/sections/team-section";
 import { StatisticsSection } from "@/components/sections/statistics-section";
 import { ContactCtaSection } from "@/components/sections/contact-cta-section";
+import { SectionReveal } from "@/components/motion/section-reveal";
 import { useSiteConfig } from "@/providers/site-config-provider";
 import type { BlogPost, Project, Service, Testimonial } from "@/lib/api/types";
 import type { Locale } from "@/stores/ui-store";
@@ -56,21 +57,45 @@ export function DynamicHomeBody({
   return (
     <>
       {show("services") && (
-        <ServicesPreview locale={locale} services={services} />
+        <SectionReveal>
+          <ServicesPreview locale={locale} services={services} />
+        </SectionReveal>
       )}
       {show("projects") && (
-        <ProjectsPreview locale={locale} projects={projects} />
+        <SectionReveal>
+          <ProjectsPreview locale={locale} projects={projects} />
+        </SectionReveal>
       )}
-      {show("statistics") && <StatisticsSection locale={locale} />}
-      {show("blog") && <BlogPreviewSection locale={locale} posts={posts} />}
+      {show("statistics") && (
+        <SectionReveal>
+          <StatisticsSection locale={locale} />
+        </SectionReveal>
+      )}
+      {show("blog") && (
+        <SectionReveal>
+          <BlogPreviewSection locale={locale} posts={posts} />
+        </SectionReveal>
+      )}
       {show("testimonials") && (
-        <TestimonialsSection locale={locale} testimonials={testimonials} />
+        <SectionReveal>
+          <TestimonialsSection locale={locale} testimonials={testimonials} />
+        </SectionReveal>
       )}
       {show("partners") && (
-        <PartnersSection locale={locale} partners={partners} />
+        <SectionReveal>
+          <PartnersSection locale={locale} partners={partners} />
+        </SectionReveal>
       )}
-      {show("team") && <TeamSection locale={locale} members={team} />}
-      {show("contact_cta") && <ContactCtaSection locale={locale} />}
+      {show("team") && (
+        <SectionReveal>
+          <TeamSection locale={locale} members={team} />
+        </SectionReveal>
+      )}
+      {show("contact_cta") && (
+        <SectionReveal>
+          <ContactCtaSection locale={locale} />
+        </SectionReveal>
+      )}
     </>
   );
 }

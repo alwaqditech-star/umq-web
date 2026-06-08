@@ -13,7 +13,7 @@ export function StaggerList({
   className?: string;
 }) {
   const ref = useRef(null);
-  const inView = useInView(ref, { once: true, margin: "-60px" });
+  const inView = useInView(ref, { once: true, margin: "-8% 0px -5% 0px" });
 
   return (
     <motion.div

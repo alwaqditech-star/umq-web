@@ -18,10 +18,10 @@ export function ContactCtaSection({ locale }: { locale: Locale }) {
       <MeshBackground variant="hero" />
       <div className="container-umq relative">
         <motion.div
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.5 }}
+          initial={{ opacity: 0, y: 40, scale: 0.97 }}
+          whileInView={{ opacity: 1, y: 0, scale: 1 }}
+          viewport={{ once: true, margin: "-10% 0px -8% 0px" }}
+          transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
           className="surface-premium mx-auto max-w-3xl rounded-3xl border-gradient p-10 text-center sm:p-14"
         >
           <h2 className="text-3xl font-bold sm:text-4xl">

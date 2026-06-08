@@ -4,9 +4,8 @@ import Image from "next/image";
 import Link from "next/link";
 import { Calendar, Clock } from "lucide-react";
 import { StaggerList, StaggerItem } from "@/components/motion/stagger-list";
-import { FadeUp } from "@/components/motion/fade-up";
+import { SectionHeader } from "@/components/sections/section-header";
 import { Card } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
 import { MeshBackground } from "@/components/design/mesh-background";
 import type { BlogPost } from "@/lib/api/types";
 import { getDictionary, localized } from "@/lib/i18n/dictionaries";
@@ -30,19 +29,13 @@ export function BlogPreviewSection({
     <section className="relative overflow-hidden py-20 sm:py-24">
       <MeshBackground variant="subtle" />
       <div className="container-umq relative">
-        <FadeUp className="flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-end">
-          <div>
-            <span className="section-kicker">
-              {locale === "ar" ? "المعرفة" : "Insights"}
-            </span>
-            <h2 className="mt-4 text-3xl font-bold sm:text-4xl">
-              {dict.sections.latestPosts}
-            </h2>
-          </div>
-          <Link href={localePath(locale, "/blog")}>
-            <Button variant="ghost">{dict.cta.viewAll}</Button>
-          </Link>
-        </FadeUp>
+        <SectionHeader
+          locale={locale}
+          kicker={locale === "ar" ? "المعرفة" : "Insights"}
+          title={dict.sections.latestPosts}
+          href={localePath(locale, "/blog")}
+          linkLabel={dict.cta.viewAll}
+        />
         <StaggerList className="mt-10 grid gap-6 md:grid-cols-3">
           {featured.map((post) => {
             const coverSrc = resolveMediaUrl(post.coverImageUrl);

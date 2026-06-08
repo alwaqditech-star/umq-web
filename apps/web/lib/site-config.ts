@@ -6,8 +6,8 @@ import { fetchPublicOrEmpty } from "@/lib/api/server-fetch";
 import { PUBLIC_PAGE_REVALIDATE } from "@/lib/public-cache";
 import type { HomeSectionKey } from "@umq/shared";
 import {
-  DEFAULT_CONTACT,
   DEFAULT_HOME_SECTIONS,
+  parseContactFromPublicSettings,
   type ContactInfoSettings,
   type HomeSectionConfig,
 } from "@/lib/site-config.defaults";
@@ -48,19 +48,7 @@ async function loadPublicSettings(): Promise<{
   contact: ContactInfoSettings;
 }> {
   const data = await serverGet<Record<string, unknown>>("/settings/public", {});
-  const contact = (data["contact.info"] ?? {}) as Partial<ContactInfoSettings>;
-  return {
-    contact: {
-      email: contact.email ?? DEFAULT_CONTACT.email,
-      phone: contact.phone ?? DEFAULT_CONTACT.phone,
-      whatsapp: contact.whatsapp ?? DEFAULT_CONTACT.whatsapp,
-      addressAr: contact.addressAr ?? DEFAULT_CONTACT.addressAr,
-      addressEn: contact.addressEn ?? DEFAULT_CONTACT.addressEn,
-      hoursAr: contact.hoursAr ?? DEFAULT_CONTACT.hoursAr,
-      hoursEn: contact.hoursEn ?? DEFAULT_CONTACT.hoursEn,
-      mapEmbedUrl: contact.mapEmbedUrl,
-    },
-  };
+  return { contact: parseContactFromPublicSettings(data) };
 }
 
 const cachedHomeSections = unstable_cache(
