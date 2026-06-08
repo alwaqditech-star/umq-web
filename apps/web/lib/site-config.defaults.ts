@@ -1,21 +1,7 @@
 /**
  * Client-safe site config defaults (no server-only or node:crypto imports).
+ * Do NOT import from @umq/shared here — it pulls node:crypto via password helpers.
  */
-
-import { HOME_SECTION_DEFAULTS, HOME_SECTION_KEYS } from "@umq/shared";
-
-const HOME_SECTION_ENABLED: Record<string, boolean> = {
-  hero: true,
-  partners: true,
-  statistics: true,
-  projects: true,
-  services: false,
-  blog: false,
-  testimonials: false,
-  team: false,
-  faq: false,
-  contact_cta: false,
-};
 
 export interface HomeSectionConfig {
   key: string;
@@ -37,15 +23,52 @@ export interface ContactInfoSettings {
   mapEmbedUrl?: string;
 }
 
+const SECTION_DEFAULTS: Record<
+  string,
+  { labelAr: string; labelEn: string; sortOrder: number }
+> = {
+  hero: { labelAr: "الواجهة الرئيسية", labelEn: "Hero", sortOrder: 0 },
+  partners: { labelAr: "الشركاء", labelEn: "Partners", sortOrder: 10 },
+  statistics: { labelAr: "الإحصائيات", labelEn: "Statistics", sortOrder: 20 },
+  projects: { labelAr: "المشاريع", labelEn: "Projects", sortOrder: 30 },
+  services: { labelAr: "الخدمات", labelEn: "Services", sortOrder: 40 },
+  blog: { labelAr: "المدونة", labelEn: "Blog", sortOrder: 50 },
+  testimonials: {
+    labelAr: "آراء العملاء",
+    labelEn: "Testimonials",
+    sortOrder: 60,
+  },
+  team: { labelAr: "الفريق", labelEn: "Team", sortOrder: 70 },
+  faq: { labelAr: "الأسئلة الشائعة", labelEn: "FAQ", sortOrder: 80 },
+  contact_cta: {
+    labelAr: "دعوة للتواصل",
+    labelEn: "Contact CTA",
+    sortOrder: 90,
+  },
+};
+
+const HOME_SECTION_ENABLED: Record<string, boolean> = {
+  hero: true,
+  partners: true,
+  statistics: true,
+  projects: true,
+  services: false,
+  blog: false,
+  testimonials: false,
+  team: false,
+  faq: false,
+  contact_cta: false,
+};
+
 const MAKKAH_MAP_QUERY = "مكة المكرمة، المملكة العربية السعودية";
 
-export const DEFAULT_HOME_SECTIONS: HomeSectionConfig[] = (
-  HOME_SECTION_KEYS as readonly string[]
+export const DEFAULT_HOME_SECTIONS: HomeSectionConfig[] = Object.keys(
+  SECTION_DEFAULTS,
 )
   .filter((key) => HOME_SECTION_ENABLED[key])
   .map((key) => ({
     key,
-    ...HOME_SECTION_DEFAULTS[key as keyof typeof HOME_SECTION_DEFAULTS],
+    ...SECTION_DEFAULTS[key]!,
   }))
   .sort((a, b) => a.sortOrder - b.sortOrder);
 
