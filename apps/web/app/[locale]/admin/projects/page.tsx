@@ -10,6 +10,10 @@ import {
   AdminFormModal,
   contentStatusOptions,
 } from "@/components/admin/form-modal";
+import {
+  parseGalleryValue,
+  serializeGalleryValue,
+} from "@/components/admin/media-gallery-input";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -22,8 +26,24 @@ import {
 } from "@/components/ui/table";
 import { localized } from "@/lib/i18n/dictionaries";
 import { useLocale } from "@/lib/i18n/use-locale";
-import { resolveMediaUrl } from "@/lib/media-url";
 import { useAuthStore } from "@/stores/auth-store";
+
+function buildGalleryValue(project: Project | null): string {
+  if (!project) return "";
+  const ids = project.imageMediaIds ?? [];
+  const urls = project.imageUrls ?? [];
+  if (ids.length > 0) {
+    return serializeGalleryValue(
+      ids.map((id, i) => ({ id, url: urls[i] ?? "" })),
+    );
+  }
+  if (project.coverMediaId) {
+    return serializeGalleryValue([
+      { id: project.coverMediaId, url: project.coverImageUrl ?? "" },
+    ]);
+  }
+  return "";
+}
 
 const projectFields = (locale: "ar" | "en") => [
   { name: "slug", label: "Slug", required: true },
@@ -81,18 +101,10 @@ const projectFields = (locale: "ar" | "en") => [
     type: "checkbox" as const,
   },
   {
-    name: "coverMediaId",
-    label: locale === "ar" ? "صورة الغلاف" : "Cover image",
-    type: "image" as const,
+    name: "imageMediaIds",
+    label: locale === "ar" ? "صور المشروع" : "Project images",
+    type: "images" as const,
     uploadFolder: "projects",
-  },
-  {
-    name: "coverExternalUrl",
-    label:
-      locale === "ar"
-        ? "أو رابط صورة خارجي (Unsplash / CDN)"
-        : "Or external image URL (Unsplash / CDN)",
-    placeholder: "https://images.unsplash.com/...",
   },
 ];
 
@@ -201,30 +213,20 @@ export default function AdminProjectsPage() {
                 order: String(editing.order ?? 0),
                 status: editing.status ?? "draft",
                 featured: editing.featured ? "true" : "false",
-                coverMediaId: editing.coverMediaId ?? "",
-                coverExternalUrl: "",
+                imageMediaIds: buildGalleryValue(editing),
               }
             : {
                 status: "published",
                 featured: "false",
                 order: "0",
                 categorySlug: "enterprise",
-                coverMediaId: "",
-                coverExternalUrl: "",
+                imageMediaIds: "",
               }
-        }
-        imagePreviews={
-          editing?.coverImageUrl
-            ? {
-                coverMediaId:
-                  resolveMediaUrl(editing.coverImageUrl) ??
-                  editing.coverImageUrl,
-              }
-            : {}
         }
         locale={locale}
         submitLabel="Save"
         onSubmit={async (values) => {
+          const gallery = parseGalleryValue(values.imageMediaIds ?? "");
           const payload = {
             slug: values.slug,
             titleAr: values.titleAr,
@@ -239,8 +241,7 @@ export default function AdminProjectsPage() {
             order: Number(values.order || 0),
             status: values.status || "draft",
             featured: values.featured === "true",
-            coverMediaId: values.coverMediaId?.trim() || null,
-            coverExternalUrl: values.coverExternalUrl?.trim() || undefined,
+            imageMediaIds: gallery.map((item) => item.id),
           };
           if (editing) await api.projects.update(editing.id, payload);
           else await api.projects.create(payload);

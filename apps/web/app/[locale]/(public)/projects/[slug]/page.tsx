@@ -1,10 +1,9 @@
-import Image from "next/image";
 import Link from "next/link";
 import { api } from "@/lib/api";
 import { FadeUp } from "@/components/motion/fade-up";
+import { ProjectDetailGallery } from "@/components/projects/project-detail-gallery";
 import { Badge } from "@/components/ui/badge";
 import { localized } from "@/lib/i18n/dictionaries";
-import { isProxiedMediaUrl, resolveMediaUrl } from "@/lib/media-url";
 import { isValidLocale, localePath } from "@/lib/i18n/routes";
 import { notFound } from "next/navigation";
 import type { Locale } from "@/stores/ui-store";
@@ -27,60 +26,75 @@ export default async function ProjectDetailPage({
     notFound();
   }
 
-  const coverSrc = resolveMediaUrl(project.coverImageUrl);
+  const title = localized(locale, project, "titleAr", "titleEn");
 
   return (
-    <article className="container-umq py-16">
+    <article className="container-umq py-12 sm:py-16">
       <FadeUp>
         <Link
           href={localePath(locale, "/projects")}
-          className="text-sm text-accent hover:underline"
+          className="inline-flex items-center gap-1 text-sm font-medium text-accent hover:underline"
         >
-          {locale === "ar" ? "← المشاريع" : "← Projects"}
+          {locale === "ar" ? "← العودة للمشاريع" : "← Back to projects"}
         </Link>
-        {project.category && <Badge className="mt-6">{project.category}</Badge>}
-        {coverSrc ? (
-          <div className="relative mt-8 aspect-[16/9] max-w-4xl overflow-hidden rounded-2xl bg-accent/10">
-            <Image
-              src={coverSrc}
-              alt={localized(locale, project, "titleAr", "titleEn")}
-              fill
-              className="object-cover"
-              sizes="(max-width:1024px) 100vw, 896px"
-              priority
-              unoptimized={isProxiedMediaUrl(coverSrc)}
-            />
+
+        <div className="mt-8 grid gap-10 lg:grid-cols-[1fr_340px] lg:items-start">
+          <div>
+            <ProjectDetailGallery project={project} alt={title} />
+
+            <h1 className="mt-8 text-3xl font-bold sm:text-4xl">{title}</h1>
+            <p className="mt-4 max-w-3xl text-lg leading-relaxed text-foreground-muted">
+              {localized(locale, project, "summaryAr", "summaryEn")}
+            </p>
+
+            {(project.contentAr || project.contentEn) && (
+              <div
+                className="prose prose-neutral mt-10 max-w-3xl dark:prose-invert"
+                dangerouslySetInnerHTML={{
+                  __html:
+                    locale === "ar"
+                      ? (project.contentAr ?? "")
+                      : (project.contentEn ?? project.contentAr ?? ""),
+                }}
+              />
+            )}
           </div>
-        ) : null}
-        <h1 className="mt-8 text-4xl font-bold">
-          {localized(locale, project, "titleAr", "titleEn")}
-        </h1>
-        <p className="mt-4 max-w-3xl text-lg text-foreground-muted">
-          {localized(locale, project, "summaryAr", "summaryEn")}
-        </p>
-        {project.clientName && (
-          <p className="mt-2 text-sm text-foreground-muted">
-            {locale === "ar" ? "العميل:" : "Client:"} {project.clientName}
-          </p>
-        )}
-        {project.technologies?.length > 0 && (
-          <div className="mt-6 flex flex-wrap gap-2">
-            {project.technologies.map((tech) => (
-              <Badge key={tech}>{tech}</Badge>
-            ))}
-          </div>
-        )}
-        {(project.contentAr || project.contentEn) && (
-          <div
-            className="prose prose-neutral mt-10 max-w-3xl dark:prose-invert"
-            dangerouslySetInnerHTML={{
-              __html:
-                locale === "ar"
-                  ? (project.contentAr ?? "")
-                  : (project.contentEn ?? project.contentAr ?? ""),
-            }}
-          />
-        )}
+
+          <aside className="space-y-6 rounded-2xl border border-border bg-surface/50 p-6 lg:sticky lg:top-24">
+            {project.category && (
+              <div>
+                <p className="text-xs font-medium uppercase tracking-wide text-foreground-muted">
+                  {locale === "ar" ? "التصنيف" : "Category"}
+                </p>
+                <Badge className="mt-2">{project.category}</Badge>
+              </div>
+            )}
+
+            {project.clientName && (
+              <div>
+                <p className="text-xs font-medium uppercase tracking-wide text-foreground-muted">
+                  {locale === "ar" ? "العميل" : "Client"}
+                </p>
+                <p className="mt-2 font-medium">{project.clientName}</p>
+              </div>
+            )}
+
+            {project.technologies?.length > 0 && (
+              <div>
+                <p className="text-xs font-medium uppercase tracking-wide text-foreground-muted">
+                  {locale === "ar" ? "التقنيات" : "Technologies"}
+                </p>
+                <div className="mt-3 flex flex-wrap gap-2">
+                  {project.technologies.map((tech) => (
+                    <Badge key={tech} variant="accent">
+                      {tech}
+                    </Badge>
+                  ))}
+                </div>
+              </div>
+            )}
+          </aside>
+        </div>
       </FadeUp>
     </article>
   );

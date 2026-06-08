@@ -49,11 +49,15 @@ export function MediaGalleryInput({
             : "Cannot reach API — start: pnpm --filter @umq/api dev",
         );
       } else if (err instanceof ApiError) {
-        setError(
-          err.status === 403 && locale === "ar"
-            ? "ليس لديك صلاحية رفع الصور"
-            : err.message,
-        );
+        if (err.status === 503 && locale === "ar") {
+          setError(
+            "الرفع غير متاح — فعّل Vercel Blob (BLOB_READ_WRITE_TOKEN) ثم أعد النشر.",
+          );
+        } else if (err.status === 403 && locale === "ar") {
+          setError("ليس لديك صلاحية رفع الصور");
+        } else {
+          setError(err.message);
+        }
       } else {
         setError(locale === "ar" ? "فشل رفع الصورة." : "Image upload failed.");
       }

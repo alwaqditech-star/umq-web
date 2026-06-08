@@ -50,6 +50,20 @@ export function isProxiedMediaUrl(src: string): boolean {
   return src.startsWith("/api/v1/media/");
 }
 
+/** Gallery URLs for a project (falls back to single cover). */
+export function getProjectImages(project: {
+  imageUrls?: string[];
+  coverImageUrl?: string;
+}): string[] {
+  const fromGallery = (project.imageUrls ?? [])
+    .map((url) => resolveMediaUrl(url) ?? url)
+    .filter(Boolean);
+  if (fromGallery.length > 0) return fromGallery;
+
+  const cover = resolveMediaUrl(project.coverImageUrl);
+  return cover ? [cover] : [];
+}
+
 /** Try same-origin proxy first, then hosted API (helps local dev without media files). */
 export function getMediaSrcCandidates(raw: string): string[] {
   const normalized = resolveMediaUrl(raw) ?? raw.trim();

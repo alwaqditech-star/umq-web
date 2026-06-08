@@ -1,15 +1,14 @@
 "use client";
 
-import Image from "next/image";
 import Link from "next/link";
 import { StaggerList, StaggerItem } from "@/components/motion/stagger-list";
+import { ProjectImageCarousel } from "@/components/projects/project-image-carousel";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { SectionHeader } from "@/components/sections/section-header";
 import type { Project } from "@/lib/api/types";
 import { localized, getDictionary } from "@/lib/i18n/dictionaries";
 import { localePath } from "@/lib/i18n/routes";
-import { isProxiedMediaUrl, resolveMediaUrl } from "@/lib/media-url";
 import type { Locale } from "@/stores/ui-store";
 
 export function ProjectsPreview({
@@ -37,23 +36,16 @@ export function ProjectsPreview({
         />
         <StaggerList className="mt-10 grid gap-6 lg:grid-cols-3">
           {featured.map((project) => {
-            const coverSrc = resolveMediaUrl(project.coverImageUrl);
+            const title = localized(locale, project, "titleAr", "titleEn");
             return (
               <StaggerItem key={project.id}>
                 <Card hover elevated className="h-full overflow-hidden p-0">
                   <Link href={localePath(locale, `/projects/${project.slug}`)}>
-                    <div className="relative aspect-[16/10] bg-accent/10">
-                      {coverSrc ? (
-                        <Image
-                          src={coverSrc}
-                          alt={localized(locale, project, "titleAr", "titleEn")}
-                          fill
-                          className="object-cover"
-                          sizes="(max-width:1024px) 100vw, 33vw"
-                          unoptimized={isProxiedMediaUrl(coverSrc)}
-                        />
-                      ) : null}
-                    </div>
+                    <ProjectImageCarousel
+                      project={project}
+                      alt={title}
+                      variant="card"
+                    />
                     <div className="p-6">
                       <Badge variant="accent">{project.category}</Badge>
                       <h3 className="mt-4 text-xl font-semibold">
