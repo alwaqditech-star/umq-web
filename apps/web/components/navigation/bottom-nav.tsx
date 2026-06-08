@@ -2,14 +2,7 @@
 
 import { usePathname } from "next/navigation";
 import { motion } from "framer-motion";
-import {
-  BookOpen,
-  Home,
-  LayoutGrid,
-  Mail,
-  Rocket,
-  User,
-} from "lucide-react";
+import { BookOpen, Home, LayoutGrid, Mail, Rocket, User } from "lucide-react";
 import { FastNavLink } from "@/components/navigation/fast-nav-link";
 import { getDictionary } from "@/lib/i18n/dictionaries";
 import { localePath } from "@/lib/i18n/routes";

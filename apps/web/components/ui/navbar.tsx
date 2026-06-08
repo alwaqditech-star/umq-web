@@ -93,10 +93,7 @@ export function Navbar({ locale }: { locale: Locale }) {
             )}
           </button>
 
-          <span
-            className="hidden h-6 w-px bg-border/80 sm:block"
-            aria-hidden
-          />
+          <span className="hidden h-6 w-px bg-border/80 sm:block" aria-hidden />
 
           <FastNavLink
             href={localePath(locale, "/contact")}
@@ -105,10 +102,7 @@ export function Navbar({ locale }: { locale: Locale }) {
             {dict.cta.contactUs}
           </FastNavLink>
 
-          <span
-            className="hidden h-6 w-px bg-border/80 sm:block"
-            aria-hidden
-          />
+          <span className="hidden h-6 w-px bg-border/80 sm:block" aria-hidden />
 
           <Link
             href={switchPath}

@@ -82,7 +82,10 @@ const ar = {
     mapCaption: "مكة المكرمة، المملكة العربية السعودية",
     email: { label: "البريد", value: "umqTech2026@gmail.com" },
     phone: { label: "الهاتف", value: "+966 55 991 8514" },
-    address: { label: "العنوان", value: "مكة المكرمة — المملكة العربية السعودية" },
+    address: {
+      label: "العنوان",
+      value: "مكة المكرمة — المملكة العربية السعودية",
+    },
     hours: { label: "ساعات العمل", value: "الأحد – الخميس، 9 ص – 6 م" },
   },
   pages: {

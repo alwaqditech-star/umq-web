@@ -62,7 +62,11 @@ export function ProjectImageCarousel({
 
   return (
     <div
-      className={cn("group relative overflow-hidden", aspectClassName, className)}
+      className={cn(
+        "group relative overflow-hidden",
+        aspectClassName,
+        className,
+      )}
     >
       {resolved.map((src, i) => (
         <Image

@@ -3,12 +3,7 @@
 import { cn } from "@/lib/utils";
 
 export function NavDivider() {
-  return (
-    <span
-      className="mx-0.5 h-7 w-px shrink-0 bg-border/80"
-      aria-hidden
-    />
-  );
+  return <span className="mx-0.5 h-7 w-px shrink-0 bg-border/80" aria-hidden />;
 }
 
 export function floatingNavShellClassName(className?: string) {

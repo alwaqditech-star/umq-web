@@ -121,7 +121,10 @@ function buildProjectGallery(project: Project): string {
   }
   if (project.coverImageUrl) {
     return serializeGalleryValue([
-      { id: project.imageMediaIds?.[0] ?? "legacy-cover", url: project.coverImageUrl },
+      {
+        id: project.imageMediaIds?.[0] ?? "legacy-cover",
+        url: project.coverImageUrl,
+      },
     ]);
   }
   return "";

@@ -27,7 +27,11 @@ export function AuthLayout({
         className="relative z-10 w-full max-w-md"
       >
         <div className="mb-8 flex flex-col items-center text-center">
-          <BrandLogo locale={locale} size="lg" className="mx-auto object-center" />
+          <BrandLogo
+            locale={locale}
+            size="lg"
+            className="mx-auto object-center"
+          />
           <p className="mt-4 text-sm text-foreground-muted">{dict.tagline}</p>
         </div>
         <div className="glass rounded-3xl p-8 shadow-lg">{children}</div>

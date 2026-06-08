@@ -67,9 +67,11 @@ export function MediaGalleryInput({
   };
 
   const moveItem = (from: number, to: number) => {
-    if (to < 0 || to >= items.length) return;
+    if (from < 0 || from >= items.length || to < 0 || to >= items.length)
+      return;
     const next = [...items];
     const [moved] = next.splice(from, 1);
+    if (!moved) return;
     next.splice(to, 0, moved);
     onChange(next);
   };
@@ -104,7 +106,9 @@ export function MediaGalleryInput({
                       className="rounded p-1 hover:bg-accent/10 disabled:opacity-30"
                       disabled={index === 0}
                       onClick={() => moveItem(index, index - 1)}
-                      aria-label={locale === "ar" ? "تحريك لليسار" : "Move left"}
+                      aria-label={
+                        locale === "ar" ? "تحريك لليسار" : "Move left"
+                      }
                     >
                       <GripVertical className="h-3.5 w-3.5 rotate-90" />
                     </button>
@@ -113,7 +117,9 @@ export function MediaGalleryInput({
                       className="rounded p-1 hover:bg-accent/10 disabled:opacity-30"
                       disabled={index === items.length - 1}
                       onClick={() => moveItem(index, index + 1)}
-                      aria-label={locale === "ar" ? "تحريك لليمين" : "Move right"}
+                      aria-label={
+                        locale === "ar" ? "تحريك لليمين" : "Move right"
+                      }
                     >
                       <GripVertical className="h-3.5 w-3.5 -rotate-90" />
                     </button>
