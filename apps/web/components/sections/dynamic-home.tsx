@@ -1,5 +1,6 @@
 "use client";
 
+import { useMemo } from "react";
 import { HeroSection } from "@/components/sections/hero-section";
 import { ServicesPreview } from "@/components/sections/services-preview";
 import { ProjectsPreview } from "@/components/sections/projects-preview";
@@ -51,51 +52,49 @@ export function DynamicHomeBody({
     bioEn: string;
   }[];
 }) {
-  const { enabledKeys } = useSiteConfig();
-  const show = (key: string) => enabledKeys.has(key);
+  const { sections } = useSiteConfig();
+
+  const orderedKeys = useMemo(
+    () =>
+      [...sections]
+        .sort((a, b) => a.sortOrder - b.sortOrder)
+        .map((s) => s.key)
+        .filter((key) => key !== "hero"),
+    [sections],
+  );
+
+  const renderSection = (key: string) => {
+    switch (key) {
+      case "partners":
+        return <PartnersSection locale={locale} partners={partners} />;
+      case "statistics":
+        return <StatisticsSection locale={locale} />;
+      case "projects":
+        return <ProjectsPreview locale={locale} projects={projects} />;
+      case "services":
+        return <ServicesPreview locale={locale} services={services} />;
+      case "blog":
+        return <BlogPreviewSection locale={locale} posts={posts} />;
+      case "testimonials":
+        return (
+          <TestimonialsSection locale={locale} testimonials={testimonials} />
+        );
+      case "team":
+        return <TeamSection locale={locale} members={team} />;
+      case "contact_cta":
+        return <ContactCtaSection locale={locale} />;
+      default:
+        return null;
+    }
+  };
 
   return (
     <>
-      {show("services") && (
-        <SectionReveal>
-          <ServicesPreview locale={locale} services={services} />
-        </SectionReveal>
-      )}
-      {show("projects") && (
-        <SectionReveal>
-          <ProjectsPreview locale={locale} projects={projects} />
-        </SectionReveal>
-      )}
-      {show("statistics") && (
-        <SectionReveal>
-          <StatisticsSection locale={locale} />
-        </SectionReveal>
-      )}
-      {show("blog") && (
-        <SectionReveal>
-          <BlogPreviewSection locale={locale} posts={posts} />
-        </SectionReveal>
-      )}
-      {show("testimonials") && (
-        <SectionReveal>
-          <TestimonialsSection locale={locale} testimonials={testimonials} />
-        </SectionReveal>
-      )}
-      {show("partners") && (
-        <SectionReveal>
-          <PartnersSection locale={locale} partners={partners} />
-        </SectionReveal>
-      )}
-      {show("team") && (
-        <SectionReveal>
-          <TeamSection locale={locale} members={team} />
-        </SectionReveal>
-      )}
-      {show("contact_cta") && (
-        <SectionReveal>
-          <ContactCtaSection locale={locale} />
-        </SectionReveal>
-      )}
+      {orderedKeys.map((key) => {
+        const node = renderSection(key);
+        if (!node) return null;
+        return <SectionReveal key={key}>{node}</SectionReveal>;
+      })}
     </>
   );
 }

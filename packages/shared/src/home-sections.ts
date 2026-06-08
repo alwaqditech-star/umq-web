@@ -19,23 +19,36 @@ export const HOME_SECTION_DEFAULTS: Record<
   { labelAr: string; labelEn: string; sortOrder: number }
 > = {
   hero: { labelAr: "الواجهة الرئيسية", labelEn: "Hero", sortOrder: 0 },
-  services: { labelAr: "الخدمات", labelEn: "Services", sortOrder: 10 },
-  projects: { labelAr: "المشاريع", labelEn: "Projects", sortOrder: 20 },
-  blog: { labelAr: "المدونة", labelEn: "Blog", sortOrder: 30 },
+  partners: { labelAr: "الشركاء", labelEn: "Partners", sortOrder: 10 },
+  statistics: { labelAr: "الإحصائيات", labelEn: "Statistics", sortOrder: 20 },
+  projects: { labelAr: "المشاريع", labelEn: "Projects", sortOrder: 30 },
+  services: { labelAr: "الخدمات", labelEn: "Services", sortOrder: 40 },
+  blog: { labelAr: "المدونة", labelEn: "Blog", sortOrder: 50 },
   testimonials: {
     labelAr: "آراء العملاء",
     labelEn: "Testimonials",
-    sortOrder: 40,
+    sortOrder: 60,
   },
-  partners: { labelAr: "الشركاء", labelEn: "Partners", sortOrder: 50 },
-  team: { labelAr: "الفريق", labelEn: "Team", sortOrder: 60 },
-  statistics: { labelAr: "الإحصائيات", labelEn: "Statistics", sortOrder: 70 },
+  team: { labelAr: "الفريق", labelEn: "Team", sortOrder: 70 },
   faq: { labelAr: "الأسئلة الشائعة", labelEn: "FAQ", sortOrder: 80 },
   contact_cta: {
     labelAr: "دعوة للتواصل",
     labelEn: "Contact CTA",
     sortOrder: 90,
   },
+};
+
+export const HOME_SECTION_ENABLED_DEFAULT: Record<HomeSectionKey, boolean> = {
+  hero: true,
+  partners: true,
+  statistics: true,
+  projects: true,
+  services: false,
+  blog: false,
+  testimonials: false,
+  team: false,
+  faq: false,
+  contact_cta: false,
 };
 
 export function isHomeSectionKey(key: string): key is HomeSectionKey {

@@ -58,11 +58,6 @@ export function ServicesPageClient({
       </section>
 
       <section className="overflow-x-hidden py-12 sm:py-16">
-        <p className="container-umq mb-8 text-center text-sm text-foreground-muted">
-          {locale === "ar"
-            ? "انتظر قليلاً — البطاقات تتقلب تلقائياً"
-            : "Wait a moment — cards rotate automatically"}
-        </p>
         <ServicesCarousel services={services} locale={locale} />
       </section>
 

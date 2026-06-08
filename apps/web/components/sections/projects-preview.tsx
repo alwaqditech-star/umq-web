@@ -1,13 +1,11 @@
 "use client";
 
 import Link from "next/link";
-import { StaggerList, StaggerItem } from "@/components/motion/stagger-list";
+import { ArrowLeft, ArrowRight, ExternalLink } from "lucide-react";
+import { FadeUp } from "@/components/motion/fade-up";
 import { ProjectImageCarousel } from "@/components/projects/project-image-carousel";
-import { Card } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { SectionHeader } from "@/components/sections/section-header";
 import type { Project } from "@/lib/api/types";
-import { localized, getDictionary } from "@/lib/i18n/dictionaries";
+import { localized } from "@/lib/i18n/dictionaries";
 import { localePath } from "@/lib/i18n/routes";
 import type { Locale } from "@/stores/ui-store";
 
@@ -18,56 +16,61 @@ export function ProjectsPreview({
   locale: Locale;
   projects: Project[];
 }) {
-  const dict = getDictionary(locale);
-  const featured = projects.filter((p) => p.featured).slice(0, 3);
+  const featured =
+    projects.find((p) => p.featured) ?? projects[0] ?? null;
+
+  if (!featured) return null;
+
+  const title = localized(locale, featured, "titleAr", "titleEn");
+  const summary = localized(locale, featured, "summaryAr", "summaryEn");
+  const Arrow = locale === "ar" ? ArrowLeft : ArrowRight;
 
   return (
-    <section className="section-alt border-y border-border/50 py-20 sm:py-24">
+    <section className="border-t border-border/30 py-16 sm:py-24">
       <div className="container-umq">
-        <SectionHeader
-          locale={locale}
-          kicker={locale === "ar" ? "أعمالنا" : "Portfolio"}
-          title={dict.sections.projects}
-          description={
-            locale === "ar" ? "أعمال نفخر بها." : "Work we're proud of."
-          }
-          href={localePath(locale, "/projects")}
-          linkLabel={dict.cta.viewAll}
-        />
-        <StaggerList className="mt-10 grid gap-6 lg:grid-cols-3">
-          {featured.map((project) => {
-            const title = localized(locale, project, "titleAr", "titleEn");
-            return (
-              <StaggerItem key={project.id}>
-                <Card hover elevated className="h-full overflow-hidden p-0">
-                  <Link href={localePath(locale, `/projects/${project.slug}`)}>
-                    <ProjectImageCarousel
-                      project={project}
-                      alt={title}
-                      variant="card"
-                    />
-                    <div className="p-6">
-                      <Badge variant="accent">{project.category}</Badge>
-                      <h3 className="mt-4 text-xl font-semibold">
-                        {localized(locale, project, "titleAr", "titleEn")}
-                      </h3>
-                      <p className="mt-2 text-sm text-foreground-muted line-clamp-2">
-                        {localized(locale, project, "summaryAr", "summaryEn")}
-                      </p>
-                      <div className="mt-4 flex flex-wrap gap-2">
-                        {project.technologies.slice(0, 3).map((t) => (
-                          <Badge key={t} variant="default">
-                            {t}
-                          </Badge>
-                        ))}
-                      </div>
-                    </div>
-                  </Link>
-                </Card>
-              </StaggerItem>
-            );
-          })}
-        </StaggerList>
+        <FadeUp>
+          <h2 className="text-center text-2xl font-bold sm:text-3xl">
+            {locale === "ar" ? "أعمال مميزة" : "Featured work"}
+          </h2>
+        </FadeUp>
+
+        <FadeUp className="mx-auto mt-10 max-w-3xl">
+          <div className="overflow-hidden rounded-3xl border border-border/50 bg-surface shadow-sm">
+            <ProjectImageCarousel
+              project={featured}
+              alt={title}
+              variant="hero"
+              intervalMs={5000}
+              className="rounded-none border-0 shadow-none"
+            />
+          </div>
+
+          <div className="mt-8 text-center sm:text-start">
+            <h3 className="text-xl font-bold sm:text-2xl">{title}</h3>
+            {summary && (
+              <p className="mt-3 text-base leading-relaxed text-foreground-muted">
+                {summary}
+              </p>
+            )}
+
+            <div className="mt-6 flex flex-wrap items-center justify-center gap-4 sm:justify-start">
+              <Link
+                href={localePath(locale, `/projects/${featured.slug}`)}
+                className="inline-flex items-center gap-2 text-sm font-semibold text-foreground transition-colors hover:text-accent"
+              >
+                <ExternalLink className="h-4 w-4" />
+                {locale === "ar" ? "عرض المشروع" : "View project"}
+              </Link>
+              <Link
+                href={localePath(locale, `/projects/${featured.slug}`)}
+                className="inline-flex items-center gap-2 text-sm font-semibold text-foreground-muted transition-colors hover:text-accent"
+              >
+                {locale === "ar" ? "مزيد من التفاصيل" : "More details"}
+                <Arrow className="h-4 w-4" />
+              </Link>
+            </div>
+          </div>
+        </FadeUp>
       </div>
     </section>
   );

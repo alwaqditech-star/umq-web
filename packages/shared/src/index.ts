@@ -5,6 +5,7 @@ export { validatePasswordPolicy } from "./password-policy";
 export {
   HOME_SECTION_KEYS,
   HOME_SECTION_DEFAULTS,
+  HOME_SECTION_ENABLED_DEFAULT,
   isHomeSectionKey,
   type HomeSectionKey,
 } from "./home-sections";

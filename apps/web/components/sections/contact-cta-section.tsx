@@ -2,9 +2,7 @@
 
 import Link from "next/link";
 import { ArrowLeft, ArrowRight } from "lucide-react";
-import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
-import { MeshBackground } from "@/components/design/mesh-background";
 import { getDictionary } from "@/lib/i18n/dictionaries";
 import { localePath } from "@/lib/i18n/routes";
 import type { Locale } from "@/stores/ui-store";
@@ -14,42 +12,26 @@ export function ContactCtaSection({ locale }: { locale: Locale }) {
   const Arrow = locale === "ar" ? ArrowLeft : ArrowRight;
 
   return (
-    <section className="relative overflow-hidden py-20 sm:py-28">
-      <MeshBackground variant="hero" />
-      <div className="container-umq relative">
-        <motion.div
-          initial={{ opacity: 0, y: 40, scale: 0.97 }}
-          whileInView={{ opacity: 1, y: 0, scale: 1 }}
-          viewport={{ once: true, margin: "-10% 0px -8% 0px" }}
-          transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-          className="surface-premium mx-auto max-w-3xl rounded-3xl border-gradient p-10 text-center sm:p-14"
-        >
-          <h2 className="text-3xl font-bold sm:text-4xl">
-            <span className="text-gradient">
-              {locale === "ar"
-                ? "لنبني شيئاً عظيماً"
-                : "Let's build something great"}
-            </span>
-          </h2>
-          <p className="mt-4 text-lg text-foreground-muted">
-            {locale === "ar"
-              ? "فريق عُمْق جاهز لمناقشة مشروعك القادم."
-              : "The UMQ team is ready to discuss your next initiative."}
-          </p>
-          <div className="mt-8 flex flex-wrap justify-center gap-4">
-            <Link href={localePath(locale, "/contact")}>
-              <Button size="lg">
-                {dict.cta.contactUs}
-                <Arrow className="h-4 w-4" />
-              </Button>
-            </Link>
-            <Link href={localePath(locale, "/services")}>
-              <Button variant="secondary" size="lg">
-                {dict.cta.learnMore}
-              </Button>
-            </Link>
-          </div>
-        </motion.div>
+    <section className="border-t border-border/30 py-20 sm:py-24">
+      <div className="container-umq text-center">
+        <h2 className="text-2xl font-bold sm:text-3xl">
+          {locale === "ar"
+            ? "لنبني شيئاً عظيماً"
+            : "Let's build something great"}
+        </h2>
+        <p className="mx-auto mt-4 max-w-xl text-foreground-muted">
+          {locale === "ar"
+            ? "فريق عُمْق جاهز لمناقشة مشروعك القادم."
+            : "The UMQ team is ready to discuss your next initiative."}
+        </p>
+        <div className="mt-8 flex flex-wrap justify-center gap-3">
+          <Link href={localePath(locale, "/contact")}>
+            <Button size="lg" className="rounded-full">
+              {dict.cta.contactUs}
+              <Arrow className="h-4 w-4" />
+            </Button>
+          </Link>
+        </div>
       </div>
     </section>
   );

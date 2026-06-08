@@ -66,14 +66,14 @@ export function SiteConfigProvider({
     };
   }, [hydrateFromApi]);
 
-  const value = useMemo(
-    () => ({
-      sections,
-      enabledKeys: new Set(sections.map((s) => s.key)),
+  const value = useMemo(() => {
+    const sorted = [...sections].sort((a, b) => a.sortOrder - b.sortOrder);
+    return {
+      sections: sorted,
+      enabledKeys: new Set(sorted.map((s) => s.key)),
       contact,
-    }),
-    [sections, contact],
-  );
+    };
+  }, [sections, contact]);
 
   return (
     <SiteConfigContext.Provider value={value}>
