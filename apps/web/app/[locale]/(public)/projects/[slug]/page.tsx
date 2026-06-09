@@ -1,7 +1,8 @@
-import Link from "next/link";
 import { api } from "@/lib/api";
 import { FadeUp } from "@/components/motion/fade-up";
+import { BackLink } from "@/components/navigation/back-link";
 import { ProjectDetailGallery } from "@/components/projects/project-detail-gallery";
+import { ProjectTechnologies } from "@/components/projects/project-technologies";
 import { Badge } from "@/components/ui/badge";
 import { localized } from "@/lib/i18n/dictionaries";
 import { isValidLocale, localePath } from "@/lib/i18n/routes";
@@ -31,12 +32,11 @@ export default async function ProjectDetailPage({
   return (
     <article className="container-umq py-12 sm:py-16">
       <FadeUp>
-        <Link
+        <BackLink
+          locale={locale}
           href={localePath(locale, "/projects")}
-          className="inline-flex items-center gap-1 text-sm font-medium text-accent hover:underline"
-        >
-          {locale === "ar" ? "← العودة للمشاريع" : "← Back to projects"}
-        </Link>
+          label={locale === "ar" ? "العودة للمشاريع" : "Back to projects"}
+        />
 
         <div className="mt-8 grid gap-10 lg:grid-cols-[1fr_340px] lg:items-start">
           <div>
@@ -84,13 +84,7 @@ export default async function ProjectDetailPage({
                 <p className="text-xs font-medium uppercase tracking-wide text-foreground-muted">
                   {locale === "ar" ? "التقنيات" : "Technologies"}
                 </p>
-                <div className="mt-3 flex flex-wrap gap-2">
-                  {project.technologies.map((tech) => (
-                    <Badge key={tech} variant="accent">
-                      {tech}
-                    </Badge>
-                  ))}
-                </div>
+                <ProjectTechnologies technologies={project.technologies} />
               </div>
             )}
           </aside>

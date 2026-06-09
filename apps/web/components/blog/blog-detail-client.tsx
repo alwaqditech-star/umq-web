@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { Calendar, Clock, Share2, User } from "lucide-react";
 import { motion } from "framer-motion";
+import { BackLink } from "@/components/navigation/back-link";
 import { FadeUp } from "@/components/motion/fade-up";
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
@@ -36,7 +37,7 @@ export function BlogDetailClient({
 
   return (
     <article>
-      {coverSrc && (
+      {coverSrc ? (
         <div className="relative h-64 w-full overflow-hidden sm:h-80 lg:h-[420px]">
           <Image
             src={coverSrc}
@@ -46,19 +47,31 @@ export function BlogDetailClient({
             priority
             sizes="100vw"
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-background/90 via-transparent to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-t from-background/90 via-background/20 to-background/40" />
+          <div className="absolute inset-x-0 top-0 z-10">
+            <div className="container-umq pt-5 sm:pt-6">
+              <BackLink
+                locale={locale}
+                href={localePath(locale, "/blog")}
+                label={locale === "ar" ? "العودة للمدونة" : "Back to blog"}
+                className="border-border/50 bg-surface/90 shadow-[0_4px_20px_rgb(0_0_0_/_0.12)]"
+              />
+            </div>
+          </div>
         </div>
-      )}
+      ) : null}
 
       <div className="container-umq py-12 sm:py-16">
         <FadeUp className="mx-auto max-w-3xl">
-          <Link
-            href={localePath(locale, "/blog")}
-            className="text-sm font-medium text-accent hover:underline"
-          >
-            {locale === "ar" ? "← المدونة" : "← Blog"}
-          </Link>
-          <div className="mt-6 flex flex-wrap items-center gap-2">
+          {!coverSrc ? (
+            <BackLink
+              locale={locale}
+              href={localePath(locale, "/blog")}
+              label={locale === "ar" ? "العودة للمدونة" : "Back to blog"}
+              className="mb-6"
+            />
+          ) : null}
+          <div className="flex flex-wrap items-center gap-2">
             <Badge variant="accent">{post.category}</Badge>
             {(post.tags ?? []).map((tag) => (
               <Badge key={tag} variant="default">

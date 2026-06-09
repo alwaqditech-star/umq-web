@@ -56,7 +56,7 @@ function FeaturedProjectCard({
           </div>
         ) : null}
 
-        <div className="mt-4 flex flex-wrap items-center justify-end gap-3">
+        <div className="mt-4 flex flex-wrap items-center justify-start gap-3">
           <AnimatedActionLink href={detailHref} variant="primary" index={0}>
             {locale === "ar" ? "عرض المشروع" : "View project"}
           </AnimatedActionLink>

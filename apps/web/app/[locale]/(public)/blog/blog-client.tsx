@@ -55,7 +55,7 @@ function BlogCard({
           </p>
         ) : null}
 
-        <div className="mt-5 flex justify-end">
+        <div className="mt-5 flex justify-start">
           <AnimatedActionLink href={href} variant="primary" index={index}>
             {locale === "ar" ? "اقرأ المزيد" : "Read more"}
           </AnimatedActionLink>

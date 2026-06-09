@@ -4,7 +4,6 @@ import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   CheckCircle2,
-  ChevronDown,
   Mail,
   Phone,
   Send,
@@ -12,7 +11,6 @@ import {
   type LucideIcon,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
 import { getDictionary } from "@/lib/i18n/dictionaries";
 import { useLocale } from "@/lib/i18n/use-locale";
 import { apiFetch, ApiError, isApiConnectionError } from "@/lib/api";
@@ -64,15 +62,10 @@ function ContactFormField({
   );
 }
 
-export function ContactPageClient({
-  faqItems = [],
-}: {
-  faqItems?: { q: string; a: string }[];
-}) {
+export function ContactPageClient() {
   const locale = useLocale();
   const dict = getDictionary(locale);
   const c = dict.contact;
-  const [openFaq, setOpenFaq] = useState<number | null>(0);
 
   const [loading, setLoading] = useState(false);
   const [sent, setSent] = useState(false);
@@ -284,49 +277,6 @@ export function ContactPageClient({
             )}
           </AnimatePresence>
         </div>
-
-        {faqItems.length > 0 && (
-          <div className="mt-14 sm:mt-16">
-            <h2 className="text-center text-lg font-bold text-foreground">
-              {locale === "ar" ? "الأسئلة الشائعة" : "FAQ"}
-            </h2>
-            <div className="mt-5 space-y-3">
-              {faqItems.map((item, i) => (
-                <Card key={item.q} padding="md" className="rounded-2xl">
-                  <button
-                    type="button"
-                    className="flex w-full items-center justify-between gap-4 text-start"
-                    onClick={() => setOpenFaq(openFaq === i ? null : i)}
-                    aria-expanded={openFaq === i}
-                  >
-                    <span className="text-sm font-medium">{item.q}</span>
-                    <ChevronDown
-                      className={cn(
-                        "h-5 w-5 shrink-0 text-foreground-muted transition-transform",
-                        openFaq === i && "rotate-180",
-                      )}
-                    />
-                  </button>
-                  <AnimatePresence initial={false}>
-                    {openFaq === i && (
-                      <motion.div
-                        initial={{ height: 0, opacity: 0 }}
-                        animate={{ height: "auto", opacity: 1 }}
-                        exit={{ height: 0, opacity: 0 }}
-                        transition={{ duration: 0.25 }}
-                        className="overflow-hidden"
-                      >
-                        <p className="pt-3 text-sm leading-relaxed text-foreground-muted">
-                          {item.a}
-                        </p>
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
-                </Card>
-              ))}
-            </div>
-          </div>
-        )}
       </div>
     </div>
   );
