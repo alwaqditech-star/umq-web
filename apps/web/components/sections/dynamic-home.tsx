@@ -14,6 +14,24 @@ import { SectionReveal } from "@/components/motion/section-reveal";
 import { useSiteConfig } from "@/providers/site-config-provider";
 import type { BlogPost, Project, Service, Testimonial } from "@/lib/api/types";
 import type { Locale } from "@/stores/ui-store";
+import type { HomeSectionConfig } from "@/lib/site-config.defaults";
+
+/** إنجازاتنا دائماً قبل أعمال مميزة حتى لو ترتيب قاعدة البيانات مختلف */
+function orderHomeBodyKeys(sections: HomeSectionConfig[]): string[] {
+  const keys = [...sections]
+    .sort((a, b) => a.sortOrder - b.sortOrder)
+    .map((s) => s.key)
+    .filter((key) => key !== "hero");
+
+  const statsIdx = keys.indexOf("statistics");
+  const projectsIdx = keys.indexOf("projects");
+  if (statsIdx !== -1 && projectsIdx !== -1 && statsIdx > projectsIdx) {
+    const reordered = keys.filter((k) => k !== "statistics");
+    reordered.splice(projectsIdx, 0, "statistics");
+    return reordered;
+  }
+  return keys;
+}
 
 export function DynamicHomeHero({
   locale,
@@ -54,14 +72,7 @@ export function DynamicHomeBody({
 }) {
   const { sections } = useSiteConfig();
 
-  const orderedKeys = useMemo(
-    () =>
-      [...sections]
-        .sort((a, b) => a.sortOrder - b.sortOrder)
-        .map((s) => s.key)
-        .filter((key) => key !== "hero"),
-    [sections],
-  );
+  const orderedKeys = useMemo(() => orderHomeBodyKeys(sections), [sections]);
 
   const renderSection = (key: string) => {
     switch (key) {

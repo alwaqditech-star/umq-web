@@ -346,3 +346,37 @@ html.nav-is-pending a {
   display: inline-block;
   text-align: start;
 }
+
+/* Tech pill — لمعان يتحرك من اليمين لليسار (مثل rkiza) */
+.tech-pill-shimmer {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    transparent 28%,
+    rgb(72 134 149 / 0.18) 42%,
+    rgb(15 36 77 / 0.1) 50%,
+    rgb(72 134 149 / 0.18) 58%,
+    transparent 72%,
+    transparent 100%
+  );
+  transform: translateX(110%);
+  animation: tech-pill-sweep 2.6s ease-in-out infinite;
+}
+
+@keyframes tech-pill-sweep {
+  0% {
+    transform: translateX(110%);
+  }
+  100% {
+    transform: translateX(-110%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tech-pill-shimmer {
+    animation: none;
+    opacity: 0;
+  }
+}

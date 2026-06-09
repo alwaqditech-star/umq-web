@@ -15,6 +15,7 @@ export interface ContactInfoSettings {
   phone: string;
   whatsapp: string;
   xUrl?: string;
+  linkedinUrl?: string;
   addressAr: string;
   addressEn: string;
   hoursAr: string;
@@ -49,7 +50,7 @@ const SECTION_DEFAULTS: Record<
 
 const HOME_SECTION_ENABLED: Record<string, boolean> = {
   hero: true,
-  partners: true,
+  partners: false,
   statistics: true,
   projects: true,
   services: false,
@@ -77,6 +78,7 @@ export const DEFAULT_CONTACT: ContactInfoSettings = {
   phone: "+966 55 991 8514",
   whatsapp: "+966559918514",
   xUrl: "https://x.com/UMQTech",
+  linkedinUrl: "https://www.linkedin.com/company/umqtech/",
   addressAr: "مكة المكرمة، المملكة العربية السعودية",
   addressEn: "Makkah, Saudi Arabia",
   hoursAr: "الأحد – الخميس، 9 ص – 6 م",
@@ -134,7 +136,8 @@ export function parseContactFromPublicSettings(
     email: contact.email ?? DEFAULT_CONTACT.email,
     phone: contact.phone ?? DEFAULT_CONTACT.phone,
     whatsapp: contact.whatsapp ?? DEFAULT_CONTACT.whatsapp,
-    xUrl: contact.xUrl ?? DEFAULT_CONTACT.xUrl,
+    xUrl: contact.xUrl || DEFAULT_CONTACT.xUrl,
+    linkedinUrl: contact.linkedinUrl || DEFAULT_CONTACT.linkedinUrl,
     ...location,
     hoursAr: contact.hoursAr ?? DEFAULT_CONTACT.hoursAr,
     hoursEn: contact.hoursEn ?? DEFAULT_CONTACT.hoursEn,

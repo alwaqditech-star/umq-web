@@ -2,7 +2,9 @@
 
 import { motion, useReducedMotion } from "framer-motion";
 import { Mail } from "lucide-react";
+import { LinkedInIcon } from "@/components/icons/linkedin-icon";
 import { getDictionary } from "@/lib/i18n/dictionaries";
+import { DEFAULT_CONTACT } from "@/lib/site-config.defaults";
 import { useSiteConfig } from "@/providers/site-config-provider";
 import type { Locale } from "@/stores/ui-store";
 
@@ -41,6 +43,8 @@ export function Footer({ locale }: { locale: Locale }) {
   const year = new Date().getFullYear();
 
   const whatsappHref = `https://wa.me/${contact.whatsapp.replace(/\D/g, "")}`;
+  const linkedinHref =
+    contact.linkedinUrl || DEFAULT_CONTACT.linkedinUrl || "";
   const socials = [
     {
       href: whatsappHref,
@@ -48,6 +52,9 @@ export function Footer({ locale }: { locale: Locale }) {
       icon: WhatsAppIcon,
     },
     ...(contact.xUrl ? [{ href: contact.xUrl, label: "X", icon: XIcon }] : []),
+    ...(linkedinHref
+      ? [{ href: linkedinHref, label: "LinkedIn", icon: LinkedInIcon }]
+      : []),
     {
       href: `mailto:${contact.email}`,
       label: locale === "ar" ? "بريد" : "Email",

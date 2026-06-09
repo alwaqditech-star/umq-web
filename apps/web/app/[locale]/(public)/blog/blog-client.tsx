@@ -1,17 +1,69 @@
 "use client";
 
 import Image from "next/image";
-import Link from "next/link";
-import { Calendar, Clock, User } from "lucide-react";
 import { PageHeader } from "@/components/public/page-header";
 import { StaggerList, StaggerItem } from "@/components/motion/stagger-list";
-import { Card } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
+import { AnimatedActionLink } from "@/components/ui/animated-action-link";
 import type { BlogPost } from "@/lib/api/types";
 import { getDictionary, localized } from "@/lib/i18n/dictionaries";
 import { localePath } from "@/lib/i18n/routes";
 import { resolveMediaUrl } from "@/lib/media-url";
 import type { Locale } from "@/stores/ui-store";
+
+function BlogCard({
+  post,
+  locale,
+  index,
+}: {
+  post: BlogPost;
+  locale: Locale;
+  index: number;
+}) {
+  const title = localized(locale, post, "titleAr", "titleEn");
+  const excerpt = localized(locale, post, "excerptAr", "excerptEn");
+  const coverSrc = resolveMediaUrl(post.coverImageUrl);
+  const href = localePath(locale, `/blog/${post.slug}`);
+
+  return (
+    <article className="group">
+      <div className="overflow-hidden rounded-[1.75rem] bg-muted/20 shadow-[0_8px_30px_rgb(15_36_77_/_0.06)] ring-1 ring-border/40">
+        <div className="relative aspect-[16/10] bg-accent/10">
+          {coverSrc ? (
+            <Image
+              src={coverSrc}
+              alt={title}
+              fill
+              className="object-cover transition-transform duration-500 group-hover:scale-[1.02]"
+              sizes="(max-width:1024px) 100vw, 50vw"
+            />
+          ) : null}
+        </div>
+      </div>
+
+      <div className="mt-5 px-0.5 sm:mt-6">
+        {post.category ? (
+          <p className="text-xs font-medium text-foreground-muted/80">
+            {post.category}
+          </p>
+        ) : null}
+        <h2 className="mt-1 text-xl font-bold leading-snug text-foreground sm:text-2xl">
+          {title}
+        </h2>
+        {excerpt ? (
+          <p className="mt-2.5 text-sm leading-relaxed text-foreground-muted line-clamp-3 sm:text-[0.9375rem]">
+            {excerpt}
+          </p>
+        ) : null}
+
+        <div className="mt-5 flex justify-end">
+          <AnimatedActionLink href={href} variant="primary" index={index}>
+            {locale === "ar" ? "اقرأ المزيد" : "Read more"}
+          </AnimatedActionLink>
+        </div>
+      </div>
+    </article>
+  );
+}
 
 export function BlogPageClient({
   locale,
@@ -37,58 +89,12 @@ export function BlogPageClient({
               : "No published articles yet."}
           </p>
         ) : (
-          <StaggerList className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
-            {posts.map((post) => {
-              const coverSrc = resolveMediaUrl(post.coverImageUrl);
-              return (
-                <StaggerItem key={post.id}>
-                  <Card
-                    hover
-                    elevated
-                    className="group h-full overflow-hidden p-0"
-                  >
-                    <Link href={localePath(locale, `/blog/${post.slug}`)}>
-                      <div className="relative aspect-[16/10] bg-accent/10">
-                        {coverSrc ? (
-                          <Image
-                            src={coverSrc}
-                            alt={localized(locale, post, "titleAr", "titleEn")}
-                            fill
-                            className="object-cover transition-transform duration-500 group-hover:scale-105"
-                            sizes="(max-width:768px) 100vw, 33vw"
-                          />
-                        ) : null}
-                      </div>
-                      <div className="p-6">
-                        <Badge variant="accent">{post.category}</Badge>
-                        <h2 className="mt-3 text-xl font-semibold line-clamp-2 group-hover:text-accent">
-                          {localized(locale, post, "titleAr", "titleEn")}
-                        </h2>
-                        <p className="mt-2 text-sm text-foreground-muted line-clamp-3">
-                          {localized(locale, post, "excerptAr", "excerptEn")}
-                        </p>
-                        <div className="mt-4 flex flex-wrap gap-3 text-xs text-foreground-muted">
-                          <span className="inline-flex items-center gap-1">
-                            <User className="h-3.5 w-3.5" />
-                            {post.author}
-                          </span>
-                          <span className="inline-flex items-center gap-1">
-                            <Clock className="h-3.5 w-3.5" />
-                            {post.readingTime} min
-                          </span>
-                          {post.publishedAt && (
-                            <span className="inline-flex items-center gap-1">
-                              <Calendar className="h-3.5 w-3.5" />
-                              {post.publishedAt.slice(0, 10)}
-                            </span>
-                          )}
-                        </div>
-                      </div>
-                    </Link>
-                  </Card>
-                </StaggerItem>
-              );
-            })}
+          <StaggerList className="mx-auto grid max-w-2xl gap-14 sm:gap-16 lg:max-w-none lg:grid-cols-2 lg:gap-x-10 lg:gap-y-16">
+            {posts.map((post, index) => (
+              <StaggerItem key={post.id}>
+                <BlogCard post={post} locale={locale} index={index} />
+              </StaggerItem>
+            ))}
           </StaggerList>
         )}
       </div>
