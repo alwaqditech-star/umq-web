@@ -4,12 +4,10 @@ import { usePathname } from "next/navigation";
 import { motion } from "framer-motion";
 import { BookOpen, Home, LayoutGrid, Mail, Rocket, User } from "lucide-react";
 import { FastNavLink } from "@/components/navigation/fast-nav-link";
+import { NavUtilities } from "@/components/navigation/nav-utilities";
 import { getDictionary } from "@/lib/i18n/dictionaries";
 import { localePath } from "@/lib/i18n/routes";
-import { publicNavLinks } from "@/lib/public-nav";
-import { useSectionEnabled } from "@/providers/site-config-provider";
 import type { Locale } from "@/stores/ui-store";
-import { floatingNavShellClassName } from "@/components/navigation/floating-nav-shared";
 import { cn } from "@/lib/utils";
 
 const bottomNavItems = [
@@ -24,75 +22,63 @@ const bottomNavItems = [
 export function BottomNav({ locale }: { locale: Locale }) {
   const dict = getDictionary(locale);
   const pathname = usePathname();
-  const blogEnabled = useSectionEnabled("blog");
-
-  const enabledPaths = new Set(
-    publicNavLinks
-      .filter(
-        (l) => !l.sectionKey || (l.sectionKey === "blog" ? blogEnabled : true),
-      )
-      .map((l) => l.path),
-  );
-
-  const items = bottomNavItems.filter((item) => enabledPaths.has(item.path));
 
   return (
     <motion.nav
-      initial={{ opacity: 0, y: 24 }}
+      initial={{ opacity: 0, y: 16 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1], delay: 0.1 }}
-      className="bottom-nav-safe fixed inset-x-0 bottom-0 z-50 px-4 pb-4 lg:hidden"
+      className="bottom-nav-safe fixed inset-x-0 bottom-0 z-50 flex justify-center px-8 pb-3 lg:hidden"
       aria-label={locale === "ar" ? "التنقل السفلي" : "Bottom navigation"}
     >
       <div
         className={cn(
-          floatingNavShellClassName(),
-          "mx-auto max-w-lg justify-between",
+          "flex w-fit items-center gap-0.5",
+          "rounded-full border border-border/70 bg-surface/95 px-1.5 py-1",
+          "shadow-[0_4px_20px_rgb(15_36_77_/_0.1)] backdrop-blur-xl",
+          "[data-theme='dark']:shadow-[0_4px_20px_rgb(0_0_0_/_0.35)]",
         )}
       >
-        {items.map(({ key, path, icon: Icon, matchPrefix }) => {
-          const href = localePath(locale, path);
-          const active =
-            pathname === href ||
-            (matchPrefix && pathname.startsWith(`${href}/`));
+        <div className="flex items-center gap-0">
+          {bottomNavItems.map(({ key, path, icon: Icon, matchPrefix }) => {
+            const href = localePath(locale, path);
+            const active =
+              pathname === href ||
+              (matchPrefix && pathname.startsWith(`${href}/`));
 
-          return (
-            <FastNavLink
-              key={key}
-              href={href}
-              matchPrefix={matchPrefix}
-              className="relative flex h-11 w-11 shrink-0 items-center justify-center rounded-full text-foreground-muted transition-colors hover:text-foreground"
-              aria-label={dict.nav[key as keyof typeof dict.nav]}
-            >
-              {active ? (
-                <motion.span
-                  layoutId="bottom-nav-active"
-                  className="absolute inset-0 rounded-full bg-muted/35"
-                  transition={{
-                    type: "spring",
-                    stiffness: 420,
-                    damping: 32,
-                  }}
-                />
-              ) : null}
-              <motion.span
-                className="relative z-10"
-                whileTap={{ scale: 0.88 }}
-                animate={active ? { scale: 1.05 } : { scale: 1 }}
-                transition={{ type: "spring", stiffness: 500, damping: 28 }}
+            return (
+              <FastNavLink
+                key={key}
+                href={href}
+                matchPrefix={matchPrefix}
+                className="relative flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-foreground-muted transition-colors hover:text-foreground"
+                aria-label={dict.nav[key as keyof typeof dict.nav]}
               >
+                {active ? (
+                  <motion.span
+                    layoutId="bottom-nav-active"
+                    className="absolute inset-0 rounded-full bg-muted/35"
+                    transition={{
+                      type: "spring",
+                      stiffness: 420,
+                      damping: 32,
+                    }}
+                  />
+                ) : null}
                 <Icon
                   className={cn(
-                    "h-[1.15rem] w-[1.15rem]",
+                    "relative z-10 h-4 w-4",
                     active && "text-foreground",
                   )}
                   strokeWidth={active ? 2.25 : 1.75}
                   aria-hidden
                 />
-              </motion.span>
-            </FastNavLink>
-          );
-        })}
+              </FastNavLink>
+            );
+          })}
+        </div>
+
+        <NavUtilities locale={locale} compact />
       </div>
     </motion.nav>
   );

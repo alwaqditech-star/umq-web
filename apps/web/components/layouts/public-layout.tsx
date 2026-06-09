@@ -28,7 +28,7 @@ export function PublicLayout({
       <TopFloatingNav locale={locale} />
       <main
         className={cn(
-          "flex-1 pt-14 pb-24 transition-opacity duration-200 lg:pb-0 lg:pt-16",
+          "flex-1 pb-20 pt-4 transition-opacity duration-200 lg:pb-0 lg:pt-16",
           navPending && "pointer-events-none opacity-60",
         )}
       >

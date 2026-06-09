@@ -1,7 +1,7 @@
 import { api } from "@/lib/api";
 import { fetchPublicOrEmpty } from "@/lib/api/server-fetch";
 import { BlogDetailClient } from "@/components/blog/blog-detail-client";
-import { fetchSeo, isBlogSectionEnabled } from "@/lib/site-config";
+import { fetchSeo } from "@/lib/site-config";
 import { isValidLocale } from "@/lib/i18n/routes";
 import { localized } from "@/lib/i18n/dictionaries";
 import { notFound } from "next/navigation";
@@ -56,10 +56,6 @@ export default async function BlogDetailPage({
   const { locale: localeParam, slug } = await params;
   if (!isValidLocale(localeParam)) notFound();
   const locale = localeParam as Locale;
-
-  if (!(await isBlogSectionEnabled())) {
-    notFound();
-  }
 
   let post;
   try {

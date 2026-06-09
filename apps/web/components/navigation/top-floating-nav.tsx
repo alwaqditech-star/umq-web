@@ -1,49 +1,55 @@
 "use client";
 
-import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { motion } from "framer-motion";
-import { Mail, Moon, Sun } from "lucide-react";
-import { BrandLogoPlate } from "@/components/brand/brand-logo";
+import {
+  BookOpen,
+  Home,
+  LayoutGrid,
+  Mail,
+  Rocket,
+  User,
+  type LucideIcon,
+} from "lucide-react";
 import { FastNavLink } from "@/components/navigation/fast-nav-link";
 import {
   floatingNavShellClassName,
   NavDivider,
 } from "@/components/navigation/floating-nav-shared";
+import { NavUtilities } from "@/components/navigation/nav-utilities";
 import { getDictionary } from "@/lib/i18n/dictionaries";
 import { localePath } from "@/lib/i18n/routes";
-import { useSectionEnabled } from "@/providers/site-config-provider";
-import { useUiStore, type Locale } from "@/stores/ui-store";
+import type { Locale } from "@/stores/ui-store";
 import { cn } from "@/lib/utils";
 
 const desktopNavItems = [
-  { key: "home", path: "", sectionKey: null, exact: true },
-  { key: "about", path: "/about", sectionKey: null, exact: false },
-  { key: "services", path: "/services", sectionKey: null, exact: false },
-  { key: "projects", path: "/projects", sectionKey: null, exact: false },
-  { key: "blog", path: "/blog", sectionKey: "blog" as const, exact: false },
+  { key: "home", path: "", icon: Home, exact: true },
+  { key: "about", path: "/about", icon: User, exact: false },
+  { key: "services", path: "/services", icon: LayoutGrid, exact: false },
+  { key: "projects", path: "/projects", icon: Rocket, exact: false },
+  { key: "blog", path: "/blog", icon: BookOpen, exact: false },
+  { key: "contact", path: "/contact", icon: Mail, exact: false },
 ] as const;
 
 function NavLink({
   href,
   active,
+  icon: Icon,
   children,
-  className,
 }: {
   href: string;
   active: boolean;
+  icon: LucideIcon;
   children: React.ReactNode;
-  className?: string;
 }) {
   return (
     <FastNavLink
       href={href}
       className={cn(
-        "relative shrink-0 rounded-full px-3.5 py-2 text-sm font-medium transition-colors",
+        "relative flex shrink-0 items-center gap-1.5 rounded-full px-3 py-2 text-sm font-medium transition-colors",
         active
           ? "text-foreground"
           : "text-foreground-muted hover:text-foreground",
-        className,
       )}
     >
       {active ? (
@@ -53,6 +59,14 @@ function NavLink({
           transition={{ type: "spring", stiffness: 420, damping: 32 }}
         />
       ) : null}
+      <Icon
+        className={cn(
+          "relative z-10 h-3.5 w-3.5 shrink-0",
+          active ? "opacity-90" : "opacity-60",
+        )}
+        strokeWidth={1.75}
+        aria-hidden
+      />
       <span className="relative z-10">{children}</span>
     </FastNavLink>
   );
@@ -61,21 +75,6 @@ function NavLink({
 export function TopFloatingNav({ locale }: { locale: Locale }) {
   const dict = getDictionary(locale);
   const pathname = usePathname();
-  const blogEnabled = useSectionEnabled("blog");
-  const { theme, toggleTheme } = useUiStore();
-  const otherLocale: Locale = locale === "ar" ? "en" : "ar";
-  const switchPath =
-    pathname.replace(`/${locale}`, `/${otherLocale}`) || `/${otherLocale}`;
-
-  const homeHref = localePath(locale, "");
-  const contactHref = localePath(locale, "/contact");
-  const contactActive =
-    pathname === contactHref || pathname.startsWith(`${contactHref}/`);
-
-  const visibleNavItems = desktopNavItems.filter(
-    (item) =>
-      !item.sectionKey || (item.sectionKey === "blog" ? blogEnabled : true),
-  );
 
   return (
     <motion.nav
@@ -88,31 +87,12 @@ export function TopFloatingNav({ locale }: { locale: Locale }) {
       <div
         className={cn(
           floatingNavShellClassName(),
-          "pointer-events-auto w-full max-w-7xl px-3 py-2 sm:px-5",
+          "pointer-events-auto justify-center px-2 py-1.5 sm:px-3",
         )}
       >
-        <div className="relative flex w-full items-center justify-between gap-6">
-          {/* Logo — corner (start in RTL = right) */}
-          <FastNavLink
-            href={homeHref}
-            matchPrefix={false}
-            className="flex shrink-0 items-center transition-opacity hover:opacity-90"
-            aria-label={dict.nav.home}
-          >
-            <BrandLogoPlate
-              locale={locale}
-              size="md"
-              linked={false}
-              plateClassName="px-2 py-1.5"
-            />
-          </FastNavLink>
-
-          {/* Nav links — centered */}
-          <div
-            className="absolute left-1/2 top-1/2 flex -translate-x-1/2 -translate-y-1/2 items-center gap-0.5"
-            role="menubar"
-          >
-            {visibleNavItems.map(({ key, path, exact }) => {
+        <div className="flex items-center gap-0.5">
+          <div className="flex items-center gap-0.5" role="menubar">
+            {desktopNavItems.map(({ key, path, icon, exact }) => {
               const href = localePath(locale, path);
               const active = exact
                 ? pathname === href
@@ -120,62 +100,15 @@ export function TopFloatingNav({ locale }: { locale: Locale }) {
               const label = dict.nav[key as keyof typeof dict.nav];
 
               return (
-                <NavLink key={key} href={href} active={active}>
+                <NavLink key={key} href={href} active={active} icon={icon}>
                   {label}
                 </NavLink>
               );
             })}
-
-            <FastNavLink
-              href={contactHref}
-              className={cn(
-                "relative flex shrink-0 items-center gap-1.5 rounded-full px-3.5 py-2 text-sm font-medium transition-colors",
-                contactActive
-                  ? "text-foreground"
-                  : "text-foreground-muted hover:text-foreground",
-              )}
-            >
-              {contactActive ? (
-                <motion.span
-                  layoutId="top-nav-active"
-                  className="absolute inset-0 rounded-full bg-muted/35"
-                  transition={{ type: "spring", stiffness: 420, damping: 32 }}
-                />
-              ) : null}
-              <span className="relative z-10">{dict.nav.contact}</span>
-              <Mail
-                className="relative z-10 h-3.5 w-3.5 opacity-70"
-                strokeWidth={1.75}
-                aria-hidden
-              />
-            </FastNavLink>
           </div>
 
-          {/* Utilities — opposite corner (end in RTL = left) */}
-          <div className="flex shrink-0 items-center gap-0.5">
-            <Link
-              href={switchPath}
-              className="flex h-10 min-w-10 shrink-0 items-center justify-center rounded-full px-2.5 text-xs font-semibold tracking-wide text-foreground-muted transition-colors hover:bg-muted/25 hover:text-foreground"
-            >
-              {otherLocale === "ar" ? "EN" : "AR"}
-            </Link>
-
-            <NavDivider />
-
-            <motion.button
-              type="button"
-              onClick={toggleTheme}
-              whileTap={{ scale: 0.9 }}
-              className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full text-foreground-muted transition-colors hover:bg-muted/25 hover:text-foreground"
-              aria-label={locale === "ar" ? "تبديل المظهر" : "Toggle theme"}
-            >
-              {theme === "light" ? (
-                <Moon className="h-[1.1rem] w-[1.1rem]" strokeWidth={1.75} />
-              ) : (
-                <Sun className="h-[1.1rem] w-[1.1rem]" strokeWidth={1.75} />
-              )}
-            </motion.button>
-          </div>
+          <NavDivider />
+          <NavUtilities locale={locale} showDivider={false} />
         </div>
       </div>
     </motion.nav>

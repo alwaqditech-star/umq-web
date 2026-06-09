@@ -1,6 +1,5 @@
 import { api } from "@/lib/api";
 import { fetchPublicOrEmpty } from "@/lib/api/server-fetch";
-import { isBlogSectionEnabled } from "@/lib/site-config";
 import { BlogPageClient } from "@/app/[locale]/(public)/blog/blog-client";
 import { isValidLocale } from "@/lib/i18n/routes";
 import { notFound } from "next/navigation";
@@ -32,10 +31,6 @@ export default async function BlogPage({
   const { locale: localeParam } = await params;
   if (!isValidLocale(localeParam)) notFound();
   const locale = localeParam as Locale;
-
-  if (!(await isBlogSectionEnabled())) {
-    notFound();
-  }
 
   const posts = await fetchPublicOrEmpty(() => api.blog.getAll(locale), []);
 
