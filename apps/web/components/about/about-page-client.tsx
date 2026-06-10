@@ -3,12 +3,16 @@
 import { Globe, Mail } from "lucide-react";
 import { LinkedInIcon } from "@/components/icons/linkedin-icon";
 import { BrandLogo } from "@/components/brand/brand-logo";
+import { FadeUp } from "@/components/motion/fade-up";
+import { SectionReveal } from "@/components/motion/section-reveal";
+import { StaggerItem, StaggerList } from "@/components/motion/stagger-list";
 import { getDictionary } from "@/lib/i18n/dictionaries";
 import { useLocale } from "@/lib/i18n/use-locale";
 import { emailActionHref } from "@/lib/contact-links";
 import { useSiteConfig } from "@/providers/site-config-provider";
 import type { Locale } from "@/stores/ui-store";
 import { AnimatedTechPill } from "@/components/ui/animated-tech-pill";
+import { getAchievementStats } from "@/lib/achievements-stats";
 import { cn } from "@/lib/utils";
 
 function XIcon({ className }: { className?: string }) {
@@ -32,14 +36,6 @@ const CONTENT = {
       "نختص في بناء المنصات الرقمية، تطبيقات الويب والجوال، والحلول المؤسسية — من الفكرة إلى الإنتاج بمعايير أمان وأداء عالية.",
     ],
     achievementsTitle: "إنجازاتنا",
-    achievementsPeriod: "2026 — الحاضر",
-    achievementsCompany: "عُمْق لتقنية المعلومات",
-    achievementsLead: "قيادة الابتكار في المملكة العربية السعودية",
-    achievementsItems: [
-      "تم تسليم أكثر من 60 مشروعاً بنجاح في مختلف القطاعات.",
-      "بناء منصات تخدم أكثر من 97 ألف مستخدم نشط.",
-      "تحقيق نسبة رضا عملاء تتجاوز 99% مع دعم فني على مدار الساعة.",
-    ],
     servicesTitle: "خدماتنا",
     services: [
       {
@@ -100,14 +96,6 @@ const CONTENT = {
       "We specialize in digital platforms, web and mobile apps, and enterprise solutions — from idea to production with strong security and performance.",
     ],
     achievementsTitle: "Our achievements",
-    achievementsPeriod: "2026 — Present",
-    achievementsCompany: "UMQ Information Technology",
-    achievementsLead: "Leading innovation in Saudi Arabia",
-    achievementsItems: [
-      "Successfully delivered 60+ projects across multiple industries.",
-      "Built platforms serving 97K+ active users.",
-      "Achieved 99%+ client satisfaction with 24/7 technical support.",
-    ],
     servicesTitle: "Our services",
     services: [
       {
@@ -163,7 +151,28 @@ const CONTENT = {
   },
 } as const;
 
-function IdentitySidebar({ locale }: { locale: Locale }) {
+function SectionTitle({
+  children,
+  className,
+}: {
+  children: React.ReactNode;
+  className?: string;
+}) {
+  return (
+    <SectionReveal>
+      <h2
+        className={cn(
+          "text-center text-2xl font-bold text-foreground sm:text-[1.75rem] lg:text-start",
+          className,
+        )}
+      >
+        {children}
+      </h2>
+    </SectionReveal>
+  );
+}
+
+function IdentityBlock({ locale }: { locale: Locale }) {
   const { contact } = useSiteConfig();
   const address = locale === "ar" ? contact.addressAr : contact.addressEn;
   const alignEnd = locale === "ar";
@@ -208,25 +217,26 @@ function SocialPills({
   centered?: boolean;
 }) {
   return (
-    <div
+    <StaggerList
       className={cn(
         "flex flex-wrap gap-2",
         centered ? "justify-center" : "justify-center lg:justify-start",
       )}
     >
       {socials.map(({ href, label, icon: Icon }) => (
-        <a
-          key={label}
-          href={href}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="inline-flex items-center gap-1.5 rounded-lg border border-border/80 px-3 py-1.5 text-sm font-medium text-foreground-muted transition-colors hover:border-foreground/20 hover:text-foreground"
-        >
-          <Icon className="h-3.5 w-3.5" aria-hidden />
-          {label}
-        </a>
+        <StaggerItem key={label}>
+          <a
+            href={href}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-1.5 rounded-lg border border-border/60 px-3 py-1.5 text-sm font-medium text-foreground-muted transition-colors hover:border-foreground/25 hover:text-foreground"
+          >
+            <Icon className="h-3.5 w-3.5" aria-hidden />
+            {label}
+          </a>
+        </StaggerItem>
       ))}
-    </div>
+    </StaggerList>
   );
 }
 
@@ -248,15 +258,19 @@ function BrandHeader({
   const dict = getDictionary(locale);
 
   return (
-    <header className={cn(centered ? "text-center" : "text-center lg:text-start")}>
+    <FadeUp
+      className={cn(centered ? "text-center" : "text-center lg:text-start")}
+    >
       <h1 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
         {dict.brand}
       </h1>
-      <p className="mt-1 text-base text-foreground-muted sm:text-lg">{tagline}</p>
+      <p className="mt-2 text-base text-foreground-muted sm:text-lg">
+        {tagline}
+      </p>
       <div className="mt-5">
         <SocialPills socials={socials} centered={centered} />
       </div>
-    </header>
+    </FadeUp>
   );
 }
 
@@ -288,11 +302,12 @@ export function AboutPageClient() {
   return (
     <div className="px-4 pb-16 pt-6 sm:pb-20 sm:pt-10">
       <div className="mx-auto max-w-5xl lg:grid lg:grid-cols-[220px_minmax(0,1fr)] lg:items-start lg:gap-16">
-        <aside className="mb-8 lg:sticky lg:top-24 lg:mb-0 lg:self-start">
-          <IdentitySidebar locale={locale} />
+        {/* الشعار ثابت — المحتوى فقط يتحرك عند التمرير */}
+        <aside className="mb-8 lg:sticky lg:top-24 lg:z-10 lg:mb-0 lg:self-start">
+          <IdentityBlock locale={locale} />
         </aside>
 
-        <div className="min-w-0">
+        <div className="min-w-0 space-y-14 sm:space-y-16">
           <BrandHeader
             locale={locale}
             tagline={copy.tagline}
@@ -300,84 +315,89 @@ export function AboutPageClient() {
             centered={false}
           />
 
-          <div className="mx-auto mt-10 max-w-2xl space-y-5 text-center text-sm leading-relaxed text-foreground-muted sm:mt-12 sm:text-[0.9375rem] lg:mx-0 lg:max-w-none lg:text-start">
-              {copy.intro.map((paragraph) => (
-                <p key={paragraph.slice(0, 24)}>{paragraph}</p>
-              ))}
-            </div>
-
-            <section className="mt-16 sm:mt-20">
-              <h2 className="text-center text-2xl font-bold text-foreground sm:text-[1.75rem] lg:text-start">
-                {copy.achievementsTitle}
-              </h2>
-
-              <div className="mt-10 flex flex-col gap-4 sm:flex-row sm:gap-10">
-                <p className="shrink-0 text-center text-sm font-medium text-foreground-muted sm:w-28 sm:text-start">
-                  {copy.achievementsPeriod}
-                </p>
-                <article className="flex-1 text-center sm:text-start">
-                  <h3 className="text-base font-bold text-foreground">
-                    {copy.achievementsCompany}
-                  </h3>
-                  <p className="mt-1 text-sm text-foreground-muted">
-                    {copy.achievementsLead}
+          <FadeUp>
+            <div className="about-rkiza-card px-5 py-5 sm:px-6 sm:py-6">
+              <div className="space-y-4">
+                {copy.intro.map((paragraph) => (
+                  <p
+                    key={paragraph.slice(0, 24)}
+                    className="text-sm leading-[1.9] text-foreground-muted sm:text-[0.9375rem]"
+                  >
+                    {paragraph}
                   </p>
-                  <ul className="mt-4 space-y-2.5">
-                    {copy.achievementsItems.map((item) => (
-                      <li
-                        key={item.slice(0, 28)}
-                        className="text-sm leading-relaxed text-foreground-muted"
-                      >
-                        {item}
-                      </li>
-                    ))}
-                  </ul>
-                </article>
+                ))}
               </div>
-            </section>
+            </div>
+          </FadeUp>
 
-            <section className="mt-16 space-y-16 sm:mt-20">
-              <div>
-                <h2 className="text-center text-2xl font-bold text-foreground sm:text-[1.75rem] lg:text-start">
-                  {copy.servicesTitle}
-                </h2>
-                <div className="mt-6 space-y-6">
-                  {copy.services.map((service) => (
-                    <div key={service.title} className="text-center lg:text-start">
-                      <h3 className="text-base font-bold text-foreground">
-                        {service.title}
-                      </h3>
-                      <p className="mt-1.5 text-sm leading-relaxed text-foreground-muted">
-                        {service.body}
-                      </p>
-                    </div>
-                  ))}
-                </div>
+          <section>
+            <SectionTitle>{copy.achievementsTitle}</SectionTitle>
+
+            <StaggerList className="mt-8 grid grid-cols-2 gap-x-6 gap-y-10 sm:mt-10 sm:gap-x-10 sm:gap-y-12">
+              {getAchievementStats(locale).map((stat) => (
+                <StaggerItem key={stat.title}>
+                  <div className="text-center lg:text-start">
+                    <p className="text-sm font-bold leading-snug text-foreground sm:text-base">
+                      {stat.title}
+                    </p>
+                    <p className="mt-2 text-[1.75rem] font-bold leading-none text-foreground sm:text-2xl">
+                      {stat.value}
+                    </p>
+                    <p className="mt-2.5 text-xs leading-relaxed text-foreground-muted sm:text-sm">
+                      {stat.description}
+                    </p>
+                  </div>
+                </StaggerItem>
+              ))}
+            </StaggerList>
+          </section>
+
+          <section>
+            <SectionTitle>{copy.servicesTitle}</SectionTitle>
+
+            <FadeUp className="mt-8 sm:mt-10">
+              <div className="about-rkiza-card px-5 py-5 sm:px-6 sm:py-6">
+                {copy.services.map((service) => (
+                  <div key={service.title} className="about-rkiza-row">
+                    <h3 className="text-base font-bold text-foreground">
+                      {service.title}
+                    </h3>
+                    <p className="mt-2 text-sm leading-relaxed text-foreground-muted">
+                      {service.body}
+                    </p>
+                  </div>
+                ))}
               </div>
+            </FadeUp>
+          </section>
 
-              <div>
-                <h2 className="text-center text-2xl font-bold text-foreground sm:text-[1.75rem] lg:text-start">
-                  {copy.techTitle}
-                </h2>
-                <div className="mt-6 space-y-8">
-                  {copy.techGroups.map((group) => (
-                    <div key={group.title} className="text-center lg:text-start">
-                      <h3 className="text-base font-bold text-foreground">
-                        {group.title}
-                      </h3>
-                      <p className="mt-1.5 text-sm leading-relaxed text-foreground-muted">
-                        {group.body}
-                      </p>
-                      <div className="mt-3 flex flex-wrap justify-center gap-2 lg:justify-start">
-                      {group.tags.map((tag, index) => (
-                        <AnimatedTechPill key={tag} label={tag} index={index} />
+          <section>
+            <SectionTitle>{copy.techTitle}</SectionTitle>
+
+            <FadeUp className="mt-8 sm:mt-10">
+              <div className="about-rkiza-card px-5 py-5 sm:px-6 sm:py-6">
+                {copy.techGroups.map((group) => (
+                  <div key={group.title} className="about-rkiza-row">
+                    <h3 className="text-base font-bold text-foreground">
+                      {group.title}
+                    </h3>
+                    <p className="mt-2 text-sm leading-relaxed text-foreground-muted">
+                      {group.body}
+                    </p>
+                    <div className="mt-4 flex flex-wrap gap-2">
+                      {group.tags.map((tag, tagIndex) => (
+                        <AnimatedTechPill
+                          key={tag}
+                          label={tag}
+                          index={tagIndex}
+                        />
                       ))}
-                      </div>
                     </div>
-                  ))}
-                </div>
+                  </div>
+                ))}
               </div>
-            </section>
+            </FadeUp>
+          </section>
         </div>
       </div>
     </div>

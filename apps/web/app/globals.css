@@ -380,3 +380,44 @@ html.nav-is-pending a {
     opacity: 0;
   }
 }
+
+/* About page — كروت rkiza: أبيض افتراضي → رمادي خفيف عند hover */
+.about-rkiza-card {
+  border-radius: 1rem;
+  border: 1px solid rgb(15 36 77 / 0.08);
+  background: #ffffff;
+  transition:
+    background-color 0.28s ease,
+    border-color 0.28s ease;
+}
+
+.about-rkiza-card:hover {
+  background: rgb(15 36 77 / 0.045);
+  border-color: rgb(15 36 77 / 0.12);
+}
+
+.about-rkiza-row + .about-rkiza-row {
+  margin-top: 1.25rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid rgb(15 36 77 / 0.07);
+}
+
+[data-theme="dark"] .about-rkiza-card {
+  background: rgb(15 36 77 / 0.55);
+  border-color: rgb(255 255 255 / 0.08);
+}
+
+[data-theme="dark"] .about-rkiza-card:hover {
+  background: rgb(255 255 255 / 0.07);
+  border-color: rgb(255 255 255 / 0.14);
+}
+
+[data-theme="dark"] .about-rkiza-row + .about-rkiza-row {
+  border-top-color: rgb(255 255 255 / 0.07);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .about-rkiza-card {
+    transition: none;
+  }
+}
