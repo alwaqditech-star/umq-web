@@ -22,18 +22,16 @@ function FeaturedProjectCard({
   const contactHref = localePath(locale, "/contact");
 
   return (
-    <article className="group">
-      <div className="overflow-hidden rounded-[1.75rem] bg-muted/20 shadow-[0_8px_30px_rgb(15_36_77_/_0.06)] ring-1 ring-border/40 transition-shadow duration-300 group-hover:shadow-[0_12px_40px_rgb(15_36_77_/_0.1)]">
-        <ProjectImageCarousel
-          project={project}
-          alt={title}
-          variant="card"
-          intervalMs={5000}
-          className="rounded-none border-0 shadow-none ring-0"
-        />
-      </div>
+    <article className="about-rkiza-card overflow-hidden p-0">
+      <ProjectImageCarousel
+        project={project}
+        alt={title}
+        variant="card"
+        intervalMs={5000}
+        className="rounded-none border-0 shadow-none ring-0"
+      />
 
-      <div className="mt-5 px-0.5 sm:mt-6">
+      <div className="px-5 py-5 sm:px-6 sm:py-6">
         {project.category ? (
           <p className="text-xs font-medium text-foreground-muted/80">
             {project.category}
@@ -91,7 +89,7 @@ export function ProjectsPreview({
           </h2>
         </FadeUp>
 
-        <div className="mt-10 space-y-14 sm:mt-12 sm:space-y-16">
+        <div className="mt-10 space-y-6 sm:mt-12 sm:space-y-8">
           {display.map((project) => (
             <FadeUp key={project.id}>
               <FeaturedProjectCard project={project} locale={locale} />
